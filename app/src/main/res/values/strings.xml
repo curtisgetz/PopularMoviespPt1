@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+
+    <!-- fallback for JSON parse -->
+    <string name="unknown_fallback">Unknown</string>
+
+
+    <!-- Title strings -->
+    <string name="top_rated_title">Top Rated</string>
+    <string name="popular_title">Popular</string>
+
+    <!-- sort menue -->
+    <string name="top_rated_sort">Sort By Top Rated</string>
+    <string name="popular_sort">Sort By Popular</string>
+    <string name="top_rated_sorted">Sorted By Top Rated</string>
+    <string name="popular_sorted">Sorted By Popular</string>
+
+    <!-- Errors-->
+    <string name="loading_error">Error Loading Data</string>
+    <string name="no_more_to_load">No More To Load</string>
+    <string name="unable_to_load">Unable To Load More Movies</string>
+    <string name="network_error">No Network Connection</string>
+
+
+    <!-- saveInstanceState keys -->
+    <string name="save_key" translatable="false">MOVIES</string>
+    <string name="detail_save_key" translatable="false">MOVIE</string>
+    <string name="scroll_pos_key" translatable="false">SCROLL_POS</string>
+
+
+    <!--  key for intent extra  -->
+    <string name="movie_to_pass" translatable="false">movie</string>
+
+
+
+    <!-- Movie Detail Labels -->
+    <string name="movie_rating">Average Rating:</string>
+    <string name="movie_release_date">Released:</string>
+
+
+    <!-- Content descriptions -->
+    <string name="poster_iv_cd">Image of movie poster</string>
+    <string name="backdrop_iv_cd">Backdrop image of movie</string>
+
+
+
+</resources>

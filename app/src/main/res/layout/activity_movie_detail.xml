@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@android:color/black">
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:padding="4dp"
+        tools:context=".MovieDetailActivity">
+
+
+        <ImageView
+            android:id="@+id/iv_backdrop"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/backdrop_iv_cd"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/backdropplaceholder" />
+
+        <ImageView
+            android:id="@+id/iv_poster"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/poster_iv_cd"
+            android:padding="4dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/iv_backdrop"
+            app:layout_constraintWidth_default="spread"
+            tools:src="@drawable/posterloadingplaceholder185" />
+
+
+        <TextView
+            android:id="@+id/tv_rating_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            android:text="@string/movie_rating"
+            android:textColor="@color/colorAccent"
+            android:textAlignment="textEnd"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/iv_backdrop"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            tools:text="Rating:" />
+
+        <TextView
+            android:id="@+id/tv_user_rating"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:padding="6dp"
+            android:textAlignment="textStart"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintLeft_toRightOf="@id/tv_rating_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_rating_label"
+            android:textSize="16sp"
+            tools:text="6.5"/>
+
+
+        <TextView
+            android:id="@+id/tv_release_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            android:text="@string/movie_release_date"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintLeft_toLeftOf="@id/tv_rating_label"
+            app:layout_constraintTop_toBottomOf="@id/tv_rating_label"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Release Date:" />
+
+        <TextView
+            android:id="@+id/tv_release_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:padding="6dp"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_release_label"
+            app:layout_constraintLeft_toRightOf="@id/tv_release_label"
+            android:textSize="16sp"
+            tools:text="Release Date" />
+
+        <TextView
+            android:id="@+id/tv_synopsis"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_release_label"
+            android:textSize="16sp"
+            tools:text="Synopsis" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.33" />
+
+
+
+
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>
