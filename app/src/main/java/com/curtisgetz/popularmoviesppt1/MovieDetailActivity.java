@@ -37,7 +37,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         if(savedInstanceState == null || !savedInstanceState.containsKey(getString(R.string.detail_save_key))){
             Intent intent = getIntent();
             if(intent != null) {
-                Log.v(TAG, "intent is not null");
                 mMovie = intent.getParcelableExtra(getString(R.string.movie_to_pass));
                 updateUI();
             }
@@ -46,8 +45,6 @@ public class MovieDetailActivity extends AppCompatActivity {
            mMovie = savedInstanceState.getParcelable(getString(R.string.detail_save_key));
            updateUI();
         }
-
-
 
     }
 

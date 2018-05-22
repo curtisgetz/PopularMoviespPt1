@@ -7,9 +7,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -17,10 +14,8 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,12 +40,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final int SORT_BY_POPULAR = 0;
     private static final int SORT_BY_TOP_RATED = 1;
-
     private static final int MOVIE_LIST_LOADER_ID = 15;
-
     private static final int RECYCLERVIEW_GRID_SPACING = 4;
-
-
 
     private PosterGridAdapter mAdapter;
     private ArrayList<Movie> mMainMovieList;
@@ -58,18 +49,9 @@ public class MainActivity extends AppCompatActivity implements
     private int mPageNumber = 1;
     private Handler mHandler;
 
-
-
     @BindView(R.id.main_gridview) RecyclerView mPosterRecyclerView;
-    @BindView(R.id.main_progress_bar) ProgressBar mProgressBar;
     @BindView(R.id.tv_error_loading) TextView mErrorTextView;
-
-
-
-
-
-
-
+    @BindView(R.id.loading_progress) ProgressBar mLoadingProgress;
 
 
     @Override
@@ -81,28 +63,23 @@ public class MainActivity extends AppCompatActivity implements
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         mPosterRecyclerView.setLayoutManager(gridLayoutManager);
         mPosterRecyclerView.addItemDecoration(new RecyclerViewDivider(RECYCLERVIEW_GRID_SPACING));
-        showProgressBar();
         //Initialize loader
         getSupportLoaderManager().initLoader(MOVIE_LIST_LOADER_ID, null, this);
-
         mMainMovieList = new ArrayList<>();
-
+        //check for savedInstanceState
         if(savedInstanceState == null || !savedInstanceState.containsKey(getString(R.string.save_key))){
             loadMovies();
         }else{
             mMainMovieList = savedInstanceState.getParcelableArrayList(getString(R.string.save_key));
             updateUI();
         }
-
+        //create new PosterGridAdapter
         mAdapter = new PosterGridAdapter(this, mMainMovieList, mPosterRecyclerView);
-        //Scroll loading
+        //Scroll loading listener
         mAdapter.setOnLoadMoreListener(new PosterGridAdapter.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                //TODO add null , so the adapter will check view_type and show progress bar at bottom
-  //              mMainMovieList.add(null);
-//                mAdapter.notifyItemInserted(mMainMovieList.size() - 1);
-
+                showLoadingProgress();
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -120,17 +97,14 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-
         outState.putParcelableArrayList(getString(R.string.save_key), mMainMovieList);
-        Log.v(TAG, "onSaveInstanceState");
-
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onPosterClick(int clickedPosterIndex) {
        if(mMainMovieList.get(clickedPosterIndex) == null){
-           Toast.makeText(MainActivity.this, "Error Getting Movie", Toast.LENGTH_SHORT)
+           Toast.makeText(MainActivity.this, getString(R.string.loading_error), Toast.LENGTH_SHORT)
                    .show();
            return;
        }
@@ -146,22 +120,17 @@ public class MainActivity extends AppCompatActivity implements
 
 
 
-    public void showProgressBar(){
-       mProgressBar.setVisibility(View.VISIBLE);
-       mPosterRecyclerView.setVisibility(View.INVISIBLE);
-    }
+
 
     public void hideProgressBar(){
-       mProgressBar.setVisibility(View.INVISIBLE);
+      // mProgressBar.setVisibility(View.INVISIBLE);
        mPosterRecyclerView.setVisibility(View.VISIBLE);
     }
-    public void showLoadingError(){
-        mErrorTextView.setVisibility(View.VISIBLE);
-        mPosterRecyclerView.setVisibility(View.INVISIBLE);
+    public void showLoadingProgress(){
+        mLoadingProgress.setVisibility(View.VISIBLE);
     }
-    public void hideLoadingError(){
-        mErrorTextView.setVisibility(View.INVISIBLE);
-        mPosterRecyclerView.setVisibility(View.VISIBLE);
+    public void hideLoadingProgress(){
+        mLoadingProgress.setVisibility(View.INVISIBLE);
     }
 
 
@@ -169,7 +138,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, @Nullable final Bundle args) {
 
-        Log.v(TAG, "*** onCreateLoader ***");
         return new AsyncTaskLoader<List<Movie>>(this) {
 
             @Override
@@ -179,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements
                     noNetworkToast();
                     return;
                 }
+
                     forceLoad();
             }
 
@@ -193,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements
     }
     @Override
     public void onLoadFinished(@NonNull Loader<List<Movie>> loader, List<Movie> data) {
+        hideLoadingProgress();
         //if null is returned then display toast
         if(data == null) {
             unableToLoadMoreToast();
@@ -206,22 +176,21 @@ public class MainActivity extends AppCompatActivity implements
 
 
     private void clearUI(){
-        showProgressBar();
+        showLoadingProgress();
         mMainMovieList.clear();
         mAdapter.notifyDataSetChanged();
-        //mPosterRecyclerView.setAdapter(null);
         //reset page number for network calls
         mPageNumber = 1;
     }
 
     private void noNetworkToast(){
+        hideLoadingProgress();
         Toast.makeText(this, getString(R.string.network_error), Toast.LENGTH_LONG).show();
     }
 
     private void unableToLoadMoreToast(){
         Toast.makeText(this, getString(R.string.unable_to_load), Toast.LENGTH_SHORT).show();
     }
-
 
 
     public void updateUI(){
@@ -235,14 +204,10 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
-
-
     @Override
     public void onLoaderReset(@NonNull Loader<List<Movie>> loader) {
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -250,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
-
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -267,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements
                 topRatedItem.setVisible(false);
                 return true;
         }
-
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -304,10 +267,7 @@ public class MainActivity extends AppCompatActivity implements
         }else{
             loaderManager.restartLoader(MOVIE_LIST_LOADER_ID, null, this);
         }
-
     }
-
-
 
 
     /*
@@ -323,9 +283,6 @@ public class MainActivity extends AppCompatActivity implements
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
 
     }
-
-
-
 
 
 }

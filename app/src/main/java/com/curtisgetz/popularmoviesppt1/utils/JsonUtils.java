@@ -11,11 +11,6 @@ import java.util.List;
 
 public class JsonUtils {
 
-    //Default to popular search
-    private final static String SEARCH_POPULAR = "/popular";
-    private final static String SEARCH_TOP_RATED = "/top_rated";
-    private String SEARCH_TYPE = SEARCH_POPULAR;
-
     //JSON KEYS
     private static final String RESULTS_ARRAY_KEY = "results";
     private static final String TITLE_KEY = "title";
@@ -27,7 +22,6 @@ public class JsonUtils {
     private static final String BACKDROP_URL_KEY = "backdrop_path";
 
     private static final String FALLBACK_STRING = "Unknown";
-
 
 
     public static List<Movie> getMainMovieList(String url)  {
@@ -59,13 +53,10 @@ public class JsonUtils {
                         posterUrl, synopsis, bgImageUrl));
             }
 
-
-
         }catch (JSONException e){
             e.printStackTrace();
             return null;
         }
-
         return listOfMovieObjects;
     }
 

@@ -1,8 +1,6 @@
 package com.curtisgetz.popularmoviesppt1;
 
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,13 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
-import com.curtisgetz.popularmoviesppt1.ui.RecyclerViewDivider;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -51,7 +45,6 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
 
         //below also from https://medium.com/@programmerasi/how-to-implement-load-more-in-recyclerview-3c6358297f4
         if(recyclerView.getLayoutManager() instanceof LinearLayoutManager){
-            Log.v(TAG, " LINEAR LAYOUT MANAGER " );
             final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
 
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -70,9 +63,6 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
                         loading = true;
                     }
 
-
-
-
                 }
             });
 
@@ -85,34 +75,19 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
         void onPosterClick(int clickedPosterIndex);
     }
 
-
-
-
-
     @Override
     public int getItemCount() {
        return mMovieList.size();
     }
 
-
-
-
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
 
+        View view = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.poster_list_item, viewGroup, false);
 
-        RecyclerView.ViewHolder viewHolder;
-        if(viewType == VIEW_ITEM){
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.poster_list_item, viewGroup, false);
-            viewHolder = new MovieViewHolder(view);
-        } else {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.scroll_progress, viewGroup, false);
-            viewHolder = new ProgressViewHolder(view);
-        }
-
-        return viewHolder;
+        return new MovieViewHolder(view);
 
     }
 
@@ -127,14 +102,11 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
                     .error(R.drawable.posterplaceholder185)
                     .into(((MovieViewHolder) holder).posterIv);
 
-        } else {
-            ((ProgressViewHolder) holder).mProgressBar.setIndeterminate(true);
         }
-
-
+        //else {
+           // ((ProgressViewHolder) holder).mProgressBar.setIndeterminate(true);
+        //}
     }
-
-
 
 
     class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -178,11 +150,11 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
     }
 
     public static class ProgressViewHolder extends RecyclerView.ViewHolder{
-         @BindView(R.id.scroll_progress_bar) ProgressBar mProgressBar;
+        // @BindView(R.id.scroll_progress_bar) ProgressBar mProgressBar;
 
          ProgressViewHolder(View view) {
             super(view);
-            ButterKnife.bind(this, view);
+          //  ButterKnife.bind(this, view);
             //mProgressBar = (ProgressBar) view.findViewById(R.id.scroll_progress_bar);
         }
     }

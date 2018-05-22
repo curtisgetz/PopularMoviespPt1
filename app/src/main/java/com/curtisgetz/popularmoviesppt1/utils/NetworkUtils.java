@@ -103,7 +103,6 @@ public class NetworkUtils {
     }
 
 
-
     private static String getJsonResponse(URL url) throws IOException{
         //create connection, inputstream and scanner
         HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
@@ -126,8 +125,5 @@ public class NetworkUtils {
         }
 
     }
-
-
-
 
 }
