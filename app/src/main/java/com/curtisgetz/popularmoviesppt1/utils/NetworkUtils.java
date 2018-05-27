@@ -1,6 +1,7 @@
 package com.curtisgetz.popularmoviesppt1.utils;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.curtisgetz.popularmoviesppt1.Movie;
 
@@ -18,7 +19,7 @@ public class NetworkUtils {
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
     //TODO **** Add API Key Here ****
-    private static final String MY_API = "";
+    private static final String MY_API = Config.API_KEY;
     //TODO **** Add API Key Here ****
     /*
     *Sign up to request an API key
@@ -31,8 +32,19 @@ public class NetworkUtils {
     private static final String BASE_URL = "https://api.themoviedb.org/3/";
     //Image size options:  "w92", "w154", "w185", "w342", "w500", "w780", or "original".
     private static final String BASE_IMAGE_URL = "https://image.tmdb.org/t/p/";
-    private static final String POSTER_IMAGE_SIZE = "w185";
-    private static final String BG_IMAGE_SIZE = "w780";
+    //Image Size Options
+    private static final String IMAGE_SIZE_W92 = "w92";
+    private static final String IMAGE_SIZE_W154 = "w154";
+    private static final String IMAGE_SIZE_W185 = "w185";
+    private static final String IMAGE_SIZE_W342 = "w342";
+    private static final String IMAGE_SIZE_W500 = "w500";
+    private static final String IMAGE_SIZE_W780 = "w780";
+    private static final String IMAGE_SIZE_ORIGINAL = "original";
+
+    //default poster size to w185
+    private static String POSTER_IMAGE_SIZE = "w185";
+    //default bg image size to 780
+    private static String BG_IMAGE_SIZE = "w780";
     //Search category
     private static final String SEARCH_CATEGORY = "movie";
 
@@ -44,7 +56,11 @@ public class NetworkUtils {
 
 
 
-    public static String getBasePosterUrl(){
+    public static String getBasePosterUrl(boolean isSW600){
+        if(isSW600){
+            //use w500 image if device width is greater than 600
+            POSTER_IMAGE_SIZE = IMAGE_SIZE_W500;
+        }
         return BASE_IMAGE_URL + POSTER_IMAGE_SIZE;
     }
 
@@ -106,6 +122,8 @@ public class NetworkUtils {
     private static String getJsonResponse(URL url) throws IOException{
         //create connection, inputstream and scanner
         HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
+        urlConnection.setConnectTimeout(5000);
+        urlConnection.setReadTimeout(10000);
         InputStream inputStream = urlConnection.getInputStream();
         Scanner scanner = new Scanner(inputStream);
         try {

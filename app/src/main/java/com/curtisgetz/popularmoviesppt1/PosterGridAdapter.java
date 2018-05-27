@@ -30,7 +30,7 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
     private int visibleThreshold = 5;
     private int lastVisibleItem, totalItemCount;
     private boolean loading;
-
+    private boolean mIsSW600;
 
      private List<Movie> mMovieList;
     final private PosterClickListener mOnClickListener;
@@ -38,9 +38,10 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
 
 
 
-    PosterGridAdapter(PosterClickListener clickListener, List<Movie> movieList, RecyclerView recyclerView) {
+    PosterGridAdapter(PosterClickListener clickListener, List<Movie> movieList, RecyclerView recyclerView, boolean isSW600) {
         this.mOnClickListener = clickListener;
         this.mMovieList = movieList;
+        this.mIsSW600 = isSW600;
 
 
         //below also from https://medium.com/@programmerasi/how-to-implement-load-more-in-recyclerview-3c6358297f4
@@ -71,6 +72,9 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
         }
     }
 
+
+
+
     public interface PosterClickListener {
         void onPosterClick(int clickedPosterIndex);
     }
@@ -91,11 +95,13 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
 
     }
 
+
+
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         if(holder instanceof MovieViewHolder){
-            String posterUrl = mMovieList.get(position).getFullPosterUrl();
+            String posterUrl = mMovieList.get(position).getFullPosterUrl(mIsSW600);
 
             Picasso.get().load(posterUrl)
                     .placeholder(R.drawable.posterloadingplaceholder185)

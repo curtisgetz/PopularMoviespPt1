@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView android:layout_height="match_parent"
+<ScrollView android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@android:color/black">
+    xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -18,16 +17,15 @@
         <ImageView
             android:id="@+id/iv_backdrop"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@string/backdrop_iv_cd"
             android:scaleType="fitCenter"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:padding="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintTop_toBottomOf="@id/iv_poster"
             tools:src="@drawable/backdropplaceholder" />
 
         <ImageView
@@ -39,7 +37,7 @@
             android:padding="4dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/iv_backdrop"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_default="spread"
             tools:src="@drawable/posterloadingplaceholder185" />
 
@@ -53,7 +51,7 @@
             android:textColor="@color/colorAccent"
             android:textAlignment="textEnd"
             app:layout_constraintLeft_toRightOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/iv_backdrop"
+            app:layout_constraintTop_toTopOf="parent"
             android:textStyle="bold"
             android:textSize="@dimen/detail_text_size"
             tools:text="Rating:" />
@@ -99,22 +97,22 @@
             android:textSize="@dimen/detail_text_size"
             tools:text="Release Date" />
 
-
-
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/synopsis_scrollview"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_release_label">
             <TextView
                 android:id="@+id/tv_synopsis"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="6dp"
-                android:isScrollContainer="true"
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/detail_text_size"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_release_label"
-                app:layout_constraintLeft_toRightOf="@id/guideline"
                 tools:text="Synopsis" />
-
-
+        </ScrollView>
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline"

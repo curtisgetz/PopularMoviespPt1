@@ -2,6 +2,7 @@ package com.curtisgetz.popularmoviesppt1;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.curtisgetz.popularmoviesppt1.utils.NetworkUtils;
 
@@ -14,7 +15,7 @@ import java.util.Locale;
 public class Movie implements Parcelable{
 
     //Viewed webcast and example project on Parcelables and onSaveInstanceState() for refresher
-
+    private final static String TAG = Movie.class.getSimpleName();
 
     private int mId;
     private double mVoteAverage;
@@ -23,6 +24,7 @@ public class Movie implements Parcelable{
     private String mPosterUrl;
     private String mSynopsis;
     private String mBGImage;
+
 
     public Movie(int id, String posterUrl){
         this.mId = id;
@@ -39,6 +41,7 @@ public class Movie implements Parcelable{
         this.mPosterUrl = mPosterUrl;
         this.mSynopsis = mSynopsis;
         this.mBGImage = bgImage;
+
     }
 
     private Movie(Parcel parcel){
@@ -66,6 +69,7 @@ public class Movie implements Parcelable{
         parcel.writeString(mPosterUrl);
         parcel.writeString(mSynopsis);
         parcel.writeString(mBGImage);
+
 
     }
 
@@ -140,9 +144,12 @@ public class Movie implements Parcelable{
         return mPosterUrl;
     }
 
-    public String getFullPosterUrl(){
+    public String getFullPosterUrl(boolean isSW600){
         //return full URL for poster image
-        return NetworkUtils.getBasePosterUrl() + mPosterUrl;
+/*        String isString = String.valueOf(isSW600);
+        String urlString = String.valueOf(mPosterUrl);
+        Log.v(TAG, "is SW600 = " + isString + "  ---  " + urlString) ;*/
+        return NetworkUtils.getBasePosterUrl(isSW600) + mPosterUrl;
     }
 
     public void setmPosterUrl(String mPosterUrl) {

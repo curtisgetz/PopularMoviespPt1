@@ -16,6 +16,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,12 +44,14 @@ public class MainActivity extends AppCompatActivity implements
     private static final int SORT_BY_TOP_RATED = 1;
     private static final int MOVIE_LIST_LOADER_ID = 15;
     private static final int RECYCLERVIEW_GRID_SPACING = 4;
+    private static final int DEFAULT_COLUMN_COUNT = 3;
 
     private PosterGridAdapter mAdapter;
     private ArrayList<Movie> mMainMovieList;
     private int mSortBy;
     private int mPageNumber = 1;
     private Handler mHandler;
+    private boolean mIsSW600;
 
     @BindView(R.id.main_gridview) RecyclerView mPosterRecyclerView;
     @BindView(R.id.tv_error_loading) TextView mErrorTextView;
@@ -60,7 +64,8 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mHandler = new Handler();
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
+        int columnCount = calculateColumnCount();
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, columnCount);
         mPosterRecyclerView.setLayoutManager(gridLayoutManager);
         mPosterRecyclerView.addItemDecoration(new RecyclerViewDivider(RECYCLERVIEW_GRID_SPACING));
         //Initialize loader
@@ -74,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements
             updateUI();
         }
         //create new PosterGridAdapter
-        mAdapter = new PosterGridAdapter(this, mMainMovieList, mPosterRecyclerView);
+        mAdapter = new PosterGridAdapter(this, mMainMovieList, mPosterRecyclerView, mIsSW600);
         //Scroll loading listener
         mAdapter.setOnLoadMoreListener(new PosterGridAdapter.OnLoadMoreListener() {
             @Override
@@ -93,6 +98,20 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+
+    private int calculateColumnCount(){
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int widthInDIP = Math.round(dm.widthPixels / dm.density);
+        if(widthInDIP > 600){
+            mIsSW600 = true;
+            //return number of columns to use
+            return 5;
+        }else{
+            mIsSW600 = false;
+            return DEFAULT_COLUMN_COUNT;
+        }
+    }
 
 
     @Override

@@ -3,6 +3,8 @@ package com.curtisgetz.popularmoviesppt1;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private final static String TAG = MovieDetailActivity.class.getSimpleName();
 //    private String mMovieTitle;
     private Movie mMovie;
+    private boolean mIsSW600;
 
     //@BindView(R.id.tv_movie_title) TextView mMovieTitleTV;
     @BindView(R.id.tv_release_date) TextView mReleaseDateTV;
@@ -32,7 +35,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
         //setTitle(mMovieTitle);
         ButterKnife.bind(this);
-
+        mSynopsis.setMovementMethod(new ScrollingMovementMethod());
+        mIsSW600 = isSmallestWidth600();
 
         if(savedInstanceState == null || !savedInstanceState.containsKey(getString(R.string.detail_save_key))){
             Intent intent = getIntent();
@@ -49,13 +53,20 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
 
+    private boolean isSmallestWidth600(){
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int widthInDIP = Math.round(dm.widthPixels / dm.density);
+        return (widthInDIP > 600);
+    }
+
     private void updateUI(){
         setTitle(mMovie.getmTitle());
         mReleaseDateTV.setText(mMovie.getLocalizedDateString());
         mSynopsis.setText(mMovie.getmSynopsis());
         mRating.setText(mMovie.getVoteAverageString());
 
-        Picasso.get().load(mMovie.getFullPosterUrl())
+        Picasso.get().load(mMovie.getFullPosterUrl(mIsSW600))
                 .placeholder(R.drawable.posterloadingplaceholder185)
                 .error(R.drawable.posterplaceholder185)
                 .into(mPosterImageView);
