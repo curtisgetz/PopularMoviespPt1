@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.curtisgetz.popularmoviesppt1.ui.RecyclerViewDivider;
+import com.curtisgetz.popularmoviesppt1.utils.FetchMoviesTaskLoader;
 import com.curtisgetz.popularmoviesppt1.utils.NetworkUtils;
 
 import java.util.ArrayList;
@@ -153,34 +154,18 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
+
     @NonNull
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, @Nullable final Bundle args) {
-
-        return new AsyncTaskLoader<List<Movie>>(this) {
-
-            @Override
-            protected void onStartLoading() {
-                // if no network then display toast and return.  otherwise load movies
-                if(!isOnline()){
-                    noNetworkToast();
-                    return;
-                }
-
-                    forceLoad();
-            }
-
-            @Override
-            public List<Movie> loadInBackground() {
-                return NetworkUtils.getMainMovies(mSortBy, mPageNumber);
-            }
-
-
-        };
-
+        return new FetchMoviesTaskLoader(this, mSortBy, mPageNumber);
     }
+
+
     @Override
     public void onLoadFinished(@NonNull Loader<List<Movie>> loader, List<Movie> data) {
+        //mAdapter.setData(data);
+
         hideLoadingProgress();
         //if null is returned then display toast
         if(data == null) {
@@ -194,6 +179,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
+    @Override
+    public void onLoaderReset(@NonNull Loader<List<Movie>> loader) {
+       // mAdapter.setData(null);
+
+    }
     private void clearUI(){
         showLoadingProgress();
         mMainMovieList.clear();
@@ -223,10 +213,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onLoaderReset(@NonNull Loader<List<Movie>> loader) {
 
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -279,12 +266,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void loadMovies(){
-        LoaderManager loaderManager = getSupportLoaderManager();
-        Loader<List<Movie>> movieLoader = loaderManager.getLoader(MOVIE_LIST_LOADER_ID);
-        if(movieLoader == null){
-            loaderManager.initLoader(MOVIE_LIST_LOADER_ID, null, this);
-        }else{
-            loaderManager.restartLoader(MOVIE_LIST_LOADER_ID, null, this);
+        if(!isOnline()){
+            noNetworkToast();
+        }else {
+            LoaderManager loaderManager = getSupportLoaderManager();
+            Loader<List<Movie>> movieLoader = loaderManager.getLoader(MOVIE_LIST_LOADER_ID);
+            if (movieLoader == null) {
+                loaderManager.initLoader(MOVIE_LIST_LOADER_ID, null, this);
+            } else {
+                loaderManager.restartLoader(MOVIE_LIST_LOADER_ID, null, this);
+            }
         }
     }
 
@@ -295,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements
     * via link in project implementation guide
     *       https://docs.google.com/document/d/1ZlN1fUsCSKuInLECcJkslIqvpKlP7jWL2TP9m6UiA6I/pub?embedded=true#h.g9v5r052l2am
     */
+
 
     public boolean isOnline(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

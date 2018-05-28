@@ -1,6 +1,7 @@
 package com.curtisgetz.popularmoviesppt1;
 
 
+import android.media.midi.MidiOutputPort;
 import android.support.annotation.NonNull;
 
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,7 +33,7 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
     private boolean loading;
     private boolean mIsSW600;
 
-     private List<Movie> mMovieList;
+    private List<Movie> mMovieList;
     final private PosterClickListener mOnClickListener;
     private OnLoadMoreListener mOnLoadMoreListener;
 
@@ -73,6 +74,12 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
     }
 
 
+/*
+    public void setData(List<Movie> movieList){
+        mMovieList = movieList;
+        notifyDataSetChanged();
+    }
+*/
 
 
     public interface PosterClickListener {
