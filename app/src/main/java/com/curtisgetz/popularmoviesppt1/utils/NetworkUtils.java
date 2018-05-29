@@ -1,9 +1,9 @@
 package com.curtisgetz.popularmoviesppt1.utils;
 
 import android.net.Uri;
-import android.util.Log;
 
-import com.curtisgetz.popularmoviesppt1.Movie;
+import com.curtisgetz.popularmoviesppt1.data.Movie;
+import com.curtisgetz.popularmoviesppt1.data.MovieVideo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,6 +47,7 @@ public class NetworkUtils {
     private static String BG_IMAGE_SIZE = "w780";
     //Search category
     private static final String SEARCH_CATEGORY = "movie";
+    private static final String SEARCH_VIDEOS = "videos";
 
     private static final String PAGE_NUMBER_KEY = "page";
 
@@ -96,7 +97,42 @@ public class NetworkUtils {
 
     }
 
-    private static URL buildMovieGridUrl( String searchType, int pageNumber){
+    public static List<MovieVideo> getTrailerList (Movie movie){
+
+        URL url = buildMovieDetailUrl(movie);
+        String jsonResponse = null;
+        try {
+            jsonResponse = getJsonResponse(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Add list of trailers to Movie object
+        return JsonUtils.getMovieTrailerList(jsonResponse);
+
+    }
+
+
+    private static URL buildMovieDetailUrl(Movie movie){
+        String movieID = String.valueOf(movie.getmId());
+
+        Uri buildUri = Uri.parse(BASE_URL)
+                .buildUpon().appendPath(SEARCH_CATEGORY)
+                .appendPath(movieID)
+                .appendPath(SEARCH_VIDEOS)
+                .appendQueryParameter(API_KEY, MY_API)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(buildUri.toString());
+        }catch (MalformedURLException e){
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    private static URL buildMovieGridUrl(String searchType, int pageNumber){
 
         String page = String.valueOf(pageNumber);
         //build URI, append search cat and search type then api key/value

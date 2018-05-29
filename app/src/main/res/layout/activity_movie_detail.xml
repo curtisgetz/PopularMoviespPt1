@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/black"
         android:padding="4dp"
-        tools:context=".MovieDetailActivity">
+        tools:context=".ui.MovieDetailActivity">
 
 
         <ImageView

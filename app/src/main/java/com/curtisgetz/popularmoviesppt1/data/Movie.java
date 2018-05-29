@@ -1,8 +1,8 @@
-package com.curtisgetz.popularmoviesppt1;
+package com.curtisgetz.popularmoviesppt1.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
+import android.print.PrinterId;
 
 import com.curtisgetz.popularmoviesppt1.utils.NetworkUtils;
 
@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Movie implements Parcelable{
@@ -24,6 +25,7 @@ public class Movie implements Parcelable{
     private String mPosterUrl;
     private String mSynopsis;
     private String mBGImage;
+    private List<MovieVideo> mMovieVideoList;
 
 
     public Movie(int id, String posterUrl){
@@ -176,5 +178,20 @@ public class Movie implements Parcelable{
     public void setmBGImage(String mBGImage) {
         this.mBGImage = mBGImage;
     }
+
+    public List<MovieVideo> getmMovieVideoList() {
+        return mMovieVideoList;
+    }
+
+    public void setmMovieVideoList(List<MovieVideo> mMovieVideoList) {
+        this.mMovieVideoList = mMovieVideoList;
+    }
+
+    public void fetchVideoList(){
+
+
+    }
+
+
 }
 

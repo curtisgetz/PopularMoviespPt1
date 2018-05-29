@@ -1,20 +1,27 @@
-package com.curtisgetz.popularmoviesppt1;
+package com.curtisgetz.popularmoviesppt1.ui;
 
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.curtisgetz.popularmoviesppt1.data.Movie;
+import com.curtisgetz.popularmoviesppt1.R;
+import com.curtisgetz.popularmoviesppt1.data.MovieVideo;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MovieDetailActivity extends AppCompatActivity {
+public class MovieDetailActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<List<MovieVideo>>{
 
     private final static String TAG = MovieDetailActivity.class.getSimpleName();
 //    private String mMovieTitle;
@@ -54,6 +61,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
 
     private boolean isSmallestWidth600(){
+        // check if smallest width of screen is at least 600
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int widthInDIP = Math.round(dm.widthPixels / dm.density);
@@ -85,5 +93,21 @@ public class MovieDetailActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(getString(R.string.detail_save_key), mMovie);
         super.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    public Loader<List<MovieVideo>> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<MovieVideo>> loader, List<MovieVideo> data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<MovieVideo>> loader) {
+
     }
 }

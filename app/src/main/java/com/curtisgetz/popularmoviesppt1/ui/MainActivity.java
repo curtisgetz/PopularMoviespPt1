@@ -1,4 +1,4 @@
-package com.curtisgetz.popularmoviesppt1;
+package com.curtisgetz.popularmoviesppt1.ui;
 
 
 
@@ -10,14 +10,12 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,9 +23,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.curtisgetz.popularmoviesppt1.ui.RecyclerViewDivider;
+import com.curtisgetz.popularmoviesppt1.data.Movie;
+import com.curtisgetz.popularmoviesppt1.data.PosterGridAdapter;
+import com.curtisgetz.popularmoviesppt1.R;
 import com.curtisgetz.popularmoviesppt1.utils.FetchMoviesTaskLoader;
-import com.curtisgetz.popularmoviesppt1.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;

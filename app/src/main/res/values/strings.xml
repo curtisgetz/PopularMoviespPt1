@@ -41,6 +41,10 @@
     <!-- Content descriptions -->
     <string name="poster_iv_cd">Image of movie poster</string>
     <string name="backdrop_iv_cd">Backdrop image of movie</string>
+    <string name="source_logo_iv_cd">Logo for website hosting this video</string>
+
+
+    <string name="youtube_name">Youtube</string>
 
 
 

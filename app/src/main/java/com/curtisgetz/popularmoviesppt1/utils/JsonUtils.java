@@ -1,6 +1,8 @@
 package com.curtisgetz.popularmoviesppt1.utils;
 
-import com.curtisgetz.popularmoviesppt1.Movie;
+import com.curtisgetz.popularmoviesppt1.R;
+import com.curtisgetz.popularmoviesppt1.data.Movie;
+import com.curtisgetz.popularmoviesppt1.data.MovieVideo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,7 +13,7 @@ import java.util.List;
 
 public class JsonUtils {
 
-    //JSON KEYS
+    //JSON KEYS for main movie data
     private static final String RESULTS_ARRAY_KEY = "results";
     private static final String TITLE_KEY = "title";
     private static final String VOTE_AVERAGE_KEY = "vote_average";
@@ -21,6 +23,15 @@ public class JsonUtils {
     private static final String RELEASE_DATE_KEY = "release_date";
     private static final String BACKDROP_URL_KEY = "backdrop_path";
 
+    //JSON KEYS for movie detail
+    private static final String VIDEO_ID_KEY = "id";
+    private static final String VIDEO_KEY_KEY = "key";
+    private static final String VIDEO_SITE_KEY = "site";
+    private static final String VIDEO_TYPE_KEY = "type";
+    private static final String VIDEO_NAME_KEY = "name";
+    private static final String VIDEO_LANG_KEY = "iso_639_1";
+
+    //figure out best way to move to strings.xml
     private static final String FALLBACK_STRING = "Unknown";
 
 
@@ -59,6 +70,40 @@ public class JsonUtils {
         }
         return listOfMovieObjects;
     }
+
+
+
+    public static List<MovieVideo> getMovieTrailerList(String url){
+        List<MovieVideo> movieVideoList = new ArrayList<>();
+        //variables for MovieVideo object
+        String videoID, videoName, videoLanguage, videoKey, videoSite, videoType;
+
+        try {
+            JSONObject queryJsonObject = new JSONObject(url);
+            JSONArray resultsJsonArray = queryJsonObject.getJSONArray(RESULTS_ARRAY_KEY);
+
+            for(int i = 0; i < resultsJsonArray.length(); i++){
+               JSONObject videoObject = resultsJsonArray.getJSONObject(i);
+               videoID = videoObject.optString(VIDEO_ID_KEY, FALLBACK_STRING);
+               videoName = videoObject.optString(VIDEO_NAME_KEY, FALLBACK_STRING);
+               videoLanguage = videoObject.optString(VIDEO_LANG_KEY, FALLBACK_STRING);
+               videoKey = videoObject.optString(VIDEO_KEY_KEY, FALLBACK_STRING);
+               videoSite = videoObject.optString(VIDEO_SITE_KEY, FALLBACK_STRING);
+               videoType = videoObject.optString(VIDEO_TYPE_KEY, FALLBACK_STRING);
+               //add new MovieVideo object to ArrayList
+                movieVideoList.add(new MovieVideo(videoID, videoName, videoLanguage, videoKey,
+                        videoSite, videoType));
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return movieVideoList;
+
+    }
+
 
 
 }
