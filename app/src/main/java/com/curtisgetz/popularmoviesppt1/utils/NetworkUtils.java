@@ -1,6 +1,7 @@
 package com.curtisgetz.popularmoviesppt1.utils;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.curtisgetz.popularmoviesppt1.data.Movie;
 import com.curtisgetz.popularmoviesppt1.data.MovieVideo;
@@ -54,6 +55,9 @@ public class NetworkUtils {
     //Default to popular search
     private final static String SEARCH_POPULAR = "popular";
     private final static String SEARCH_TOP_RATED = "top_rated";
+
+    private final static String BASE_YOUTUBE_URL = "https://www.youtube.com/watch";
+    private final static String YOUTUBE_QUERY_PARAM = "v";
 
 
 
@@ -110,6 +114,17 @@ public class NetworkUtils {
         return JsonUtils.getMovieTrailerList(jsonResponse);
 
     }
+
+
+
+    public static Uri buildVideoIntentUri(String trailerKey){
+
+        return Uri.parse(BASE_YOUTUBE_URL)
+                .buildUpon().appendQueryParameter(YOUTUBE_QUERY_PARAM, trailerKey)
+                .build();
+
+    }
+
 
 
     private static URL buildMovieDetailUrl(Movie movie){
@@ -179,5 +194,7 @@ public class NetworkUtils {
         }
 
     }
+
+
 
 }

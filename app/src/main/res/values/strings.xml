@@ -8,10 +8,13 @@
     <!-- Title strings -->
     <string name="top_rated_title">Top Rated</string>
     <string name="popular_title">Popular</string>
+    <string name="favorites">Favorites</string>
 
-    <!-- sort menue -->
+    <!-- sort menus -->
     <string name="top_rated_sort">Sort By Top Rated</string>
     <string name="popular_sort">Sort By Popular</string>
+    <string name="show_favorites">Show Favorites</string>
+    <string name="showing_favorites">Showing Favorites</string>
     <string name="top_rated_sorted">Sorted By Top Rated</string>
     <string name="popular_sorted">Sorted By Popular</string>
 
@@ -20,6 +23,7 @@
     <string name="no_more_to_load">No More To Load</string>
     <string name="unable_to_load">Unable To Load More Movies</string>
     <string name="network_error">No Network Connection</string>
+    <string name="video_error">Error Loading Video</string>
 
 
     <!-- saveInstanceState keys -->

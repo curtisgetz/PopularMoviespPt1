@@ -1,5 +1,7 @@
 package com.curtisgetz.popularmoviesppt1.utils;
 
+import android.util.Log;
+
 import com.curtisgetz.popularmoviesppt1.R;
 import com.curtisgetz.popularmoviesppt1.data.Movie;
 import com.curtisgetz.popularmoviesppt1.data.MovieVideo;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JsonUtils {
+
+    private static final String TAG = JsonUtils.class.getSimpleName();
 
     //JSON KEYS for main movie data
     private static final String RESULTS_ARRAY_KEY = "results";
@@ -91,6 +95,7 @@ public class JsonUtils {
                videoSite = videoObject.optString(VIDEO_SITE_KEY, FALLBACK_STRING);
                videoType = videoObject.optString(VIDEO_TYPE_KEY, FALLBACK_STRING);
                //add new MovieVideo object to ArrayList
+               // Log.v(TAG, videoName );
                 movieVideoList.add(new MovieVideo(videoID, videoName, videoLanguage, videoKey,
                         videoSite, videoType));
             }
