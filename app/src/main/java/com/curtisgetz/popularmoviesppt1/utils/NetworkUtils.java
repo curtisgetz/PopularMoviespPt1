@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.curtisgetz.popularmoviesppt1.data.Movie;
+import com.curtisgetz.popularmoviesppt1.data.MovieReview;
 import com.curtisgetz.popularmoviesppt1.data.MovieVideo;
 
 import java.io.IOException;
@@ -49,6 +50,8 @@ public class NetworkUtils {
     //Search category
     private static final String SEARCH_CATEGORY = "movie";
     private static final String SEARCH_VIDEOS = "videos";
+
+    private static final String SEARCH_REVIEWS = "reviews";
 
     private static final String PAGE_NUMBER_KEY = "page";
 
@@ -116,6 +119,18 @@ public class NetworkUtils {
     }
 
 
+    public static List<MovieReview> getReviewList(int movieID){
+        String movieIdString = String.valueOf(movieID);
+        URL url = buildReviewUrl(movieIdString);
+        String jsonResponse = null;
+        try {
+            jsonResponse = getJsonResponse(url);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        //return List of reviews or null if error
+        return JsonUtils.getMovieReviewList(jsonResponse);
+    }
 
     public static Uri buildVideoIntentUri(String trailerKey){
 
@@ -126,6 +141,27 @@ public class NetworkUtils {
     }
 
 
+    private static URL buildReviewUrl(String movieID){
+        //build url to request reviews of movie by movieID
+        Uri buildUri = Uri.parse(BASE_URL)
+                .buildUpon().appendPath(SEARCH_CATEGORY)
+                .appendPath(movieID)
+                .appendPath(SEARCH_REVIEWS)
+                .appendQueryParameter(API_KEY, MY_API)
+                .build();
+
+        URL url = null;
+        try{
+            url = new URL(buildUri.toString());
+            String a = buildUri.toString();
+            Log.v(TAG, a);
+        }catch (MalformedURLException e){
+            e.printStackTrace();
+        }
+
+        //return the url to use, or null if error
+        return url;
+    }
 
     private static URL buildMovieDetailUrl(Movie movie){
         String movieID = String.valueOf(movie.getmId());

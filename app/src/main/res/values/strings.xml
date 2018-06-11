@@ -34,7 +34,7 @@
 
     <!--  key for intent extra  -->
     <string name="movie_to_pass" translatable="false">movie</string>
-
+    <string name="movie_id_to_pass" translatable="false">movieID</string>
 
 
     <!-- Movie Detail Labels -->
@@ -48,8 +48,14 @@
     <string name="source_logo_iv_cd">Logo for website hosting this video</string>
 
 
-    <string name="youtube_name">Youtube</string>
+    <!-- Review Layout -->
+    <string name="review_author">Author</string>
+    <string name="review_content">Review</string>
+    <string name="review_url">URL</string>
 
+
+    <!-- Trailer Video Source  -->
+    <string name="youtube_name">Youtube</string>
 
 
 </resources>

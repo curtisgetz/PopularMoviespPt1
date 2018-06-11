@@ -221,6 +221,8 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
+    //TODO update menu for sorting
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         //Hide menu options for current sort, show menu option for available sort

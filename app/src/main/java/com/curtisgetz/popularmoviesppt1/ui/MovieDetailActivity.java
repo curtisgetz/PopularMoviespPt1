@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -183,7 +184,6 @@ public class MovieDetailActivity extends AppCompatActivity
 
     public void loadVideos(){
 
-        Log.v(TAG, String.valueOf(isOnline()));
         if(!isOnline()){
             noNetworkToast();
         }else {
@@ -208,5 +208,20 @@ public class MovieDetailActivity extends AppCompatActivity
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
 
+    }
+
+
+
+    //TODO  remove, only for testing
+    public void testButton(View view){
+
+        //Movie movieToPass = mMainMovieList.get(clickedPosterIndex);
+        // create intent for MovieDetailActivity
+        Intent intent = new Intent(getApplicationContext(), MovieReviewsActivity.class);
+        intent.putExtra(getString(R.string.movie_id_to_pass), mMovie.getmId());
+        //put movie as extra
+        if(intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 }

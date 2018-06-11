@@ -16,7 +16,11 @@
         android:padding="4dp"
         tools:context=".ui.MovieDetailActivity">
 
-
+        <!-- TODO, remove button, Only for testing. UI needs work if time -->
+        <Button
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:onClick="testButton"/>
 
         <ImageView
             android:id="@+id/iv_backdrop"

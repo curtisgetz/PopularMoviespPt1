@@ -58,7 +58,7 @@ public class MovieVideoListAdapter extends RecyclerView.Adapter<MovieVideoListAd
     public void onBindViewHolder(@NonNull VideoViewHolder holder, int position) {
 
         MovieVideo currentVideo = mVideoList.get(position);
-        Log.v(TAG, currentVideo.getmName());
+        //Log.v(TAG, currentVideo.getmName());
         holder.mVideoNameTV.setText(currentVideo.getmName());
         holder.mVideoTypeTV.setText(currentVideo.getmType());
 

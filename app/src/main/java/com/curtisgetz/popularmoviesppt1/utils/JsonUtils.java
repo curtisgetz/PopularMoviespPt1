@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.curtisgetz.popularmoviesppt1.R;
 import com.curtisgetz.popularmoviesppt1.data.Movie;
+import com.curtisgetz.popularmoviesppt1.data.MovieReview;
 import com.curtisgetz.popularmoviesppt1.data.MovieVideo;
 
 import org.json.JSONArray;
@@ -35,16 +36,22 @@ public class JsonUtils {
     private static final String VIDEO_NAME_KEY = "name";
     private static final String VIDEO_LANG_KEY = "iso_639_1";
 
+    //JSON Keys for movie reviews
+    private static final String REVIEW_AUTHOR_KEY = "author";
+    private static final String REVIEW_CONTENT_KEY = "content";
+    private static final String REVIEW_ID_KEY = "id";
+    private static final String REVIEW_URL_KEY = "url";
+
     //figure out best way to move to strings.xml
     private static final String FALLBACK_STRING = "Unknown";
 
 
-    public static List<Movie> getMainMovieList(String url)  {
+    public static List<Movie> getMainMovieList(String json)  {
         //create new list to store new Movie objects
         List<Movie> listOfMovieObjects = new ArrayList<>();
         try {
             //Get main JSON object
-            JSONObject queryJsonObject = new JSONObject(url);
+            JSONObject queryJsonObject = new JSONObject(json);
             //Get results JSON object
             JSONArray resultsJsonArray = queryJsonObject.getJSONArray(RESULTS_ARRAY_KEY);
 
@@ -77,13 +84,13 @@ public class JsonUtils {
 
 
 
-    public static List<MovieVideo> getMovieTrailerList(String url){
+    public static List<MovieVideo> getMovieTrailerList(String json){
         List<MovieVideo> movieVideoList = new ArrayList<>();
         //variables for MovieVideo object
         String videoID, videoName, videoLanguage, videoKey, videoSite, videoType;
 
         try {
-            JSONObject queryJsonObject = new JSONObject(url);
+            JSONObject queryJsonObject = new JSONObject(json);
             JSONArray resultsJsonArray = queryJsonObject.getJSONArray(RESULTS_ARRAY_KEY);
 
             for(int i = 0; i < resultsJsonArray.length(); i++){
@@ -103,10 +110,41 @@ public class JsonUtils {
 
         } catch (JSONException e) {
             e.printStackTrace();
+            return null;
         }
 
         return movieVideoList;
 
+    }
+
+
+    public static List<MovieReview> getMovieReviewList(String json) {
+        List<MovieReview> reviewList = new ArrayList<>();
+        String author, id, url, content;
+
+
+        try {
+            JSONObject resultJsonObject = new JSONObject(json);
+            JSONArray resultsJsonArray = resultJsonObject.getJSONArray(RESULTS_ARRAY_KEY);
+
+            for(int i = 0; i < resultsJsonArray.length(); i++){
+                JSONObject reviewObject = resultsJsonArray.getJSONObject(i);
+                author = reviewObject.optString(REVIEW_AUTHOR_KEY, FALLBACK_STRING);
+                id = reviewObject.optString(REVIEW_ID_KEY, FALLBACK_STRING);
+                url = reviewObject.optString(REVIEW_URL_KEY, FALLBACK_STRING);
+                content = reviewObject.optString(REVIEW_CONTENT_KEY, FALLBACK_STRING);
+                // add new MovieReview to ArrayList
+                Log.v(TAG, author + " : " + String.valueOf(i));
+                reviewList.add(new MovieReview(id, author, content, url));
+            }
+
+        }catch (JSONException e){
+            e.printStackTrace();
+            return null;
+        }
+
+
+        return reviewList;
     }
 
 
