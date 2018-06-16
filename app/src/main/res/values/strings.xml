@@ -9,6 +9,7 @@
     <string name="top_rated_title">Top Rated</string>
     <string name="popular_title">Popular</string>
     <string name="favorites">Favorites</string>
+    <string name="reviews_title">Reviews</string>
 
     <!-- sort menus -->
     <string name="top_rated_sort">Sort By Top Rated</string>

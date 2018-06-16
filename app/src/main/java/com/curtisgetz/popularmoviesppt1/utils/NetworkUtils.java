@@ -4,8 +4,8 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.curtisgetz.popularmoviesppt1.data.Movie;
-import com.curtisgetz.popularmoviesppt1.data.MovieReview;
-import com.curtisgetz.popularmoviesppt1.data.MovieVideo;
+import com.curtisgetz.popularmoviesppt1.data.movie_review.MovieReview;
+import com.curtisgetz.popularmoviesppt1.data.movie_video.MovieVideo;
 
 import java.io.IOException;
 import java.io.InputStream;

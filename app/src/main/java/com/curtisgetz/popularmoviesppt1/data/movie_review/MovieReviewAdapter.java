@@ -1,12 +1,10 @@
-package com.curtisgetz.popularmoviesppt1.data;
+package com.curtisgetz.popularmoviesppt1.data.movie_review;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.curtisgetz.popularmoviesppt1.R;

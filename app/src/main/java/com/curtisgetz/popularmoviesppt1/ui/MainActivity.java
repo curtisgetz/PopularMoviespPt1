@@ -4,6 +4,7 @@ package com.curtisgetz.popularmoviesppt1.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 import com.curtisgetz.popularmoviesppt1.data.Movie;
 import com.curtisgetz.popularmoviesppt1.data.PosterGridAdapter;
 import com.curtisgetz.popularmoviesppt1.R;
+import com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteCursorAdapter;
 import com.curtisgetz.popularmoviesppt1.utils.FetchMoviesTaskLoader;
 
 import java.util.ArrayList;
@@ -47,23 +50,33 @@ public class MainActivity extends AppCompatActivity implements
     private static final int DEFAULT_COLUMN_COUNT = 3;
 
     private PosterGridAdapter mAdapter;
+    private FavoriteCursorAdapter mCursorAdapter;
     private ArrayList<Movie> mMainMovieList;
     private int mSortBy;
     private int mPageNumber = 1;
     private Handler mHandler;
     private boolean mIsSW600;
+    private LoaderManager.LoaderCallbacks<Cursor> mFavoriteCallback;
+    private FavoriteCursorAdapter test;
 
     @BindView(R.id.main_gridview) RecyclerView mPosterRecyclerView;
     @BindView(R.id.tv_error_loading) TextView mErrorTextView;
     @BindView(R.id.loading_progress) ProgressBar mLoadingProgress;
 
 
+
+    //TODO   restore when coming back from DetailActivity.  Currently duplicating movies
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v(TAG, "MAIN On Create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mHandler = new Handler();
+
+
         int columnCount = calculateColumnCount();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, columnCount);
         mPosterRecyclerView.setLayoutManager(gridLayoutManager);
@@ -79,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements
             updateUI();
         }
         //create new PosterGridAdapter
-        mAdapter = new PosterGridAdapter(this, mMainMovieList, mPosterRecyclerView, mIsSW600);
+        mAdapter = new PosterGridAdapter(this, mMainMovieList,  mPosterRecyclerView, mIsSW600);
         //Scroll loading listener
         mAdapter.setOnLoadMoreListener(new PosterGridAdapter.OnLoadMoreListener() {
             @Override
@@ -98,6 +111,15 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+
+    @Override
+    protected void onStart() {
+        Log.v(TAG, "On Start : " + String.valueOf(mPageNumber));
+        Log.v(TAG, "On Start : " + String.valueOf(mMainMovieList.size()));
+
+        super.onStart();
+
+    }
 
     private int calculateColumnCount(){
         DisplayMetrics dm = new DisplayMetrics();
@@ -267,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void loadMovies(){
+        Log.v(TAG, "loadMovies() - " + String.valueOf(mPageNumber));
         if(!isOnline()){
             noNetworkToast();
         }else {
@@ -295,6 +318,9 @@ public class MainActivity extends AppCompatActivity implements
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
 
     }
+
+
+
 
 
 }

@@ -22,7 +22,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.MovieDetailActivity" />
-        <activity android:name=".ui.MovieReviewsActivity"></activity>
+
+        <provider
+            android:authorities="com.curtisgetz.popularmoviesppt1"
+            android:name="com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteContentProvider"
+            android:exported="false"/>
+
+
     </application>
 
 </manifest>

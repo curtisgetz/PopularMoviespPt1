@@ -11,10 +11,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.curtisgetz.popularmoviesppt1.R;
-import com.curtisgetz.popularmoviesppt1.data.MovieReview;
-import com.curtisgetz.popularmoviesppt1.data.MovieReviewAdapter;
+import com.curtisgetz.popularmoviesppt1.data.movie_review.MovieReview;
+import com.curtisgetz.popularmoviesppt1.data.movie_review.MovieReviewAdapter;
 import com.curtisgetz.popularmoviesppt1.utils.FetchReviewsLoader;
-import com.curtisgetz.popularmoviesppt1.utils.JsonUtils;
 
 import java.util.List;
 

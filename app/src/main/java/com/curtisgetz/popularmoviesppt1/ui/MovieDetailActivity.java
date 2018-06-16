@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.content.Intent;
 import android.support.v4.content.Loader;
@@ -21,8 +23,10 @@ import android.widget.Toast;
 
 import com.curtisgetz.popularmoviesppt1.data.Movie;
 import com.curtisgetz.popularmoviesppt1.R;
-import com.curtisgetz.popularmoviesppt1.data.MovieVideo;
-import com.curtisgetz.popularmoviesppt1.data.MovieVideoListAdapter;
+import com.curtisgetz.popularmoviesppt1.data.movie_review.MovieReview;
+import com.curtisgetz.popularmoviesppt1.data.movie_video.MovieVideo;
+import com.curtisgetz.popularmoviesppt1.data.movie_video.MovieVideoListAdapter;
+import com.curtisgetz.popularmoviesppt1.utils.FetchReviewsLoader;
 import com.curtisgetz.popularmoviesppt1.utils.FetchVideoListLoader;
 import com.curtisgetz.popularmoviesppt1.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -34,16 +38,23 @@ import butterknife.ButterKnife;
 
 
 public class MovieDetailActivity extends AppCompatActivity
-        implements MovieVideoListAdapter.VideoItemClickListener, LoaderManager.LoaderCallbacks<List<MovieVideo>>{
+        implements MovieVideoListAdapter.VideoItemClickListener,
+        LoaderManager.LoaderCallbacks<List<MovieVideo>>{
 
     private final static String TAG = MovieDetailActivity.class.getSimpleName();
     private final static int VIDEO_LOADER_ID = 6;
+    private final static int REVIEW_LOADER_ID = 5;
 
 
     //    private String mMovieTitle;
     private Movie mMovie;
     private boolean mIsSW600;
     private List<MovieVideo> mVideoList;
+    private FragmentManager testFragmentManager;
+    private LoaderManager.LoaderCallbacks<List<MovieReview>> mReviewCallback;
+    private int mMovieId;
+    private List<MovieReview> mReviewList;
+    private Context mContext;
    // private MovieVideoListAdapter mAdapter;
 
     @BindView(R.id.video_recyclerview) RecyclerView mVideoRecyclerView;
@@ -60,9 +71,10 @@ public class MovieDetailActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
+        mContext = MovieDetailActivity.this;
 
-
-
+        mReviewCallback = new ReviewCallback();
+        testFragmentManager = getSupportFragmentManager();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mVideoRecyclerView.setLayoutManager(layoutManager);
 
@@ -88,6 +100,8 @@ public class MovieDetailActivity extends AppCompatActivity
         // in savedInstanceState
         loadVideos();
 
+
+
     }
 
 
@@ -103,7 +117,7 @@ public class MovieDetailActivity extends AppCompatActivity
     }
 
     private void updateUI(){
-
+        mMovieId = mMovie.getmId();
         setTitle(mMovie.getmTitle());
         mReleaseDateTV.setText(mMovie.getLocalizedDateString());
         mSynopsis.setText(mMovie.getmSynopsis());
@@ -164,16 +178,22 @@ public class MovieDetailActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(@NonNull Loader<List<MovieVideo>> loader, List<MovieVideo> data) {
-       if(data != null){
-           mVideoList = data;
-           mMovie.setmMovieVideoList(data);
-           MovieVideoListAdapter adapter = new MovieVideoListAdapter(this, data);
-           mVideoRecyclerView.setAdapter(adapter);
 
-           //TODO removed member variables, added local variables
-           //mAdapter = new MovieVideoListAdapter(this, data);
-           //mVideoRecyclerView.setAdapter(mAdapter);
-       }
+           if(data == null || data.size() == 0) {
+               Toast.makeText(this,
+                       "No trailers available for this movie.", Toast.LENGTH_SHORT).show();
+           }else {
+               mVideoList = data;
+               mMovie.setmMovieVideoList(data);
+               MovieVideoListAdapter adapter = new MovieVideoListAdapter(this, data);
+               mVideoRecyclerView.setAdapter(adapter);
+
+               //TODO removed member variables, added local variables
+               //mAdapter = new MovieVideoListAdapter(this, data);
+               //mVideoRecyclerView.setAdapter(mAdapter);
+
+           }
+
     }
 
     @Override
@@ -195,6 +215,7 @@ public class MovieDetailActivity extends AppCompatActivity
                 loaderManager.restartLoader(VIDEO_LOADER_ID, null, this);
             }
         }
+
     }
 
     private void noNetworkToast(){
@@ -215,13 +236,106 @@ public class MovieDetailActivity extends AppCompatActivity
     //TODO  remove, only for testing
     public void testButton(View view){
 
+        Log.v(TAG, "TEST BUTTON");
+        //TODO reuse cached data
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<List<MovieReview>> reviewLoader = loaderManager.getLoader(REVIEW_LOADER_ID);
+        if(reviewLoader == null){
+            Log.v(TAG, "LOADER NULL");
+            loaderManager.initLoader(REVIEW_LOADER_ID, null, mReviewCallback).forceLoad();
+        }else {
+            Log.v(TAG, "LOADER NOT NULL");
+            loaderManager.restartLoader(REVIEW_LOADER_ID, null, mReviewCallback).forceLoad();
+        }
+       /* Bundle bundle = new Bundle();
+
+        MovieReviewFragment movieReviewFragment = new MovieReviewFragment();
+        movieReviewFragment.setmMovieId(mMovie.getmId());
+
+        movieReviewFragment.show(getSupportFragmentManager(), "MovieReviewFragment");
+*/
         //Movie movieToPass = mMainMovieList.get(clickedPosterIndex);
         // create intent for MovieDetailActivity
-        Intent intent = new Intent(getApplicationContext(), MovieReviewsActivity.class);
-        intent.putExtra(getString(R.string.movie_id_to_pass), mMovie.getmId());
+       // Intent intent = new Intent(getApplicationContext(), MovieReviewsActivity.class);
+       // intent.putExtra(getString(R.string.movie_id_to_pass), mMovie.getmId());
         //put movie as extra
-        if(intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
+       // if(intent.resolveActivity(getPackageManager()) != null) {
+       //     startActivity(intent);
+        //}
+    }
+
+
+
+    public void showReviews(){
+
+        Log.v(TAG, "SHOW REVIEWS");
+
+        Bundle bundle = new Bundle();
+
+        MovieReviewFragment movieReviewFragment = new MovieReviewFragment();
+        //movieReviewFragment.setmMovieId(mMovieId);
+        movieReviewFragment.setmReviewList(mReviewList);
+       // Log.v(TAG, String.valueOf(movieReviewFragment.getmMovieId()));
+        movieReviewFragment.show(getSupportFragmentManager(), "MovieReviewFragment");
+
+    }
+
+    public void initReviewLoader(){
+        mReviewCallback = new LoaderManager.LoaderCallbacks<List<MovieReview>>() {
+            @NonNull
+            @Override
+            public Loader<List<MovieReview>> onCreateLoader(int id, @Nullable Bundle args) {
+                Log.v(TAG, "POn create loader!");
+                return new FetchReviewsLoader(mContext, mMovieId);
+            }
+
+            @Override
+            public void onLoadFinished(@NonNull Loader<List<MovieReview>> loader, List<MovieReview> data) {
+                Log.v(TAG, "LOADER FINISHED");
+                mReviewList = data;
+                showReviews();
+            }
+
+            @Override
+            public void onLoaderReset(@NonNull Loader<List<MovieReview>> loader) {
+
+            }
+        };
+    }
+
+
+    public void showNoReviewsToast() {
+        Toast.makeText(this, "No reviews for this movie", Toast.LENGTH_SHORT).show();
+    }
+
+
+
+
+    private class ReviewCallback implements LoaderManager.LoaderCallbacks<List<MovieReview>>{
+
+        @NonNull
+        @Override
+        public Loader<List<MovieReview>> onCreateLoader(int id, @Nullable Bundle args) {
+            Log.v(TAG, "POn create loader!");
+            return new FetchReviewsLoader(mContext, mMovieId);
+        }
+
+        @Override
+        public void onLoadFinished(@NonNull Loader<List<MovieReview>> loader, List<MovieReview> data) {
+            Log.v(TAG, "LOADER FINISHED");
+            if(data.size() > 0) {
+                mReviewList = data;
+                showReviews();
+            }else {
+                showNoReviewsToast();
+            }
+        }
+
+
+
+        @Override
+        public void onLoaderReset(@NonNull Loader<List<MovieReview>> loader) {
+
         }
     }
 }

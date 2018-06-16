@@ -17,10 +17,7 @@
         tools:context=".ui.MovieDetailActivity">
 
         <!-- TODO, remove button, Only for testing. UI needs work if time -->
-        <Button
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:onClick="testButton"/>
+
 
         <ImageView
             android:id="@+id/iv_backdrop"
@@ -36,6 +33,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/backdropplaceholder" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/review_fragment_container"
+            app:layout_constraintTop_toBottomOf="@id/iv_backdrop"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <ImageView
             android:id="@+id/iv_poster"
@@ -79,6 +85,21 @@
             android:textSize="@dimen/detail_text_size"
             tools:text="6.5"/>
 
+        <Button
+            android:id="@+id/review_button"
+            android:layout_width="0dp"
+            android:layout_height="18dp"
+            android:textSize="12sp"
+            android:background="@android:color/holo_blue_light"
+            android:text="Reviews"
+            android:onClick="testButton"
+            app:layout_constraintTop_toBottomOf="@id/tv_rating_label"
+            app:layout_constraintLeft_toLeftOf="@id/tv_rating_label"
+            app:layout_constraintRight_toRightOf="@id/tv_user_rating"
+
+            />
+
+
 
         <TextView
             android:id="@+id/tv_release_label"
@@ -88,7 +109,7 @@
             android:text="@string/movie_release_date"
             android:textColor="@color/colorAccent"
             app:layout_constraintLeft_toLeftOf="@id/tv_rating_label"
-            app:layout_constraintTop_toBottomOf="@id/tv_rating_label"
+            app:layout_constraintTop_toBottomOf="@id/review_button"
             android:textSize="@dimen/detail_text_size"
             android:textStyle="bold"
             tools:text="Release Date:" />

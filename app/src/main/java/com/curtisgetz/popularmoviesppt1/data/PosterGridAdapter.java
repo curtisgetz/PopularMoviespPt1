@@ -1,6 +1,8 @@
 package com.curtisgetz.popularmoviesppt1.data;
 
 
+import android.content.Context;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,23 +34,41 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
     private boolean loading;
     private boolean mIsSW600;
 
-    private List<Movie> mMovieList;
+
+    protected List<Movie> mMovieList;
     final private PosterClickListener mOnClickListener;
     private OnLoadMoreListener mOnLoadMoreListener;
+    private RecyclerView mRecyclerView;
 
 
 
-    public PosterGridAdapter(PosterClickListener clickListener, List<Movie> movieList, RecyclerView recyclerView, boolean isSW600) {
+    public PosterGridAdapter(PosterClickListener clickListener, List<Movie> movieList,
+                             RecyclerView recyclerView, boolean isSW600) {
         this.mOnClickListener = clickListener;
         this.mMovieList = movieList;
         this.mIsSW600 = isSW600;
+        this.mRecyclerView = recyclerView;
+        setScrollListener();
 
+    }
+
+
+    //constructor for Cursor Adapter subclass (MovieList passed in from subclass
+    public PosterGridAdapter(PosterClickListener clickListener,
+                             RecyclerView recyclerView, boolean isSW600){
+        this.mOnClickListener = clickListener;
+        this.mIsSW600 = isSW600;
+        this.mRecyclerView = recyclerView;
+        setScrollListener();
+    }
+
+    private void setScrollListener(){
 
         //below also from https://medium.com/@programmerasi/how-to-implement-load-more-in-recyclerview-3c6358297f4
-        if(recyclerView.getLayoutManager() instanceof LinearLayoutManager){
-            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        if(mRecyclerView.getLayoutManager() instanceof LinearLayoutManager){
+            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
 
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
@@ -70,8 +90,8 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
 
 
         }
-    }
 
+    }
 
 /*
     public void setData(List<Movie> movieList){
@@ -174,4 +194,34 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
     public void setLoaded() {
         loading = false;
     }
+
+
+
+
+
+    // Cursor code
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

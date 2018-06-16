@@ -2,9 +2,10 @@ package com.curtisgetz.popularmoviesppt1.utils;
 
 import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
+import android.util.Log;
 
 
-import com.curtisgetz.popularmoviesppt1.data.MovieReview;
+import com.curtisgetz.popularmoviesppt1.data.movie_review.MovieReview;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class FetchReviewsLoader extends AsyncTaskLoader<List<MovieReview>>{
 
     @Override
     protected void onStartLoading() {
+        Log.v(TAG, "ON START LOADING");
         super.onStartLoading();
         forceLoad();
     }
@@ -28,6 +30,7 @@ public class FetchReviewsLoader extends AsyncTaskLoader<List<MovieReview>>{
 
     @Override
     public List<MovieReview> loadInBackground() {
+        Log.v(TAG, "LOAD IN BACKGROUND");
         return NetworkUtils.getReviewList(mMovieID);
     }
 

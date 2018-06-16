@@ -2,8 +2,8 @@ package com.curtisgetz.popularmoviesppt1.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.print.PrinterId;
 
+import com.curtisgetz.popularmoviesppt1.data.movie_video.MovieVideo;
 import com.curtisgetz.popularmoviesppt1.utils.NetworkUtils;
 
 import java.text.DateFormat;

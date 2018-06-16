@@ -1,4 +1,4 @@
-package com.curtisgetz.popularmoviesppt1.data;
+package com.curtisgetz.popularmoviesppt1.data.movie_video;
 
 public class MovieVideo {
 

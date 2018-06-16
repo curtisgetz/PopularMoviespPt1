@@ -4,7 +4,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
 
 import com.curtisgetz.popularmoviesppt1.data.Movie;
-import com.curtisgetz.popularmoviesppt1.data.MovieVideo;
+import com.curtisgetz.popularmoviesppt1.data.movie_video.MovieVideo;
 
 import java.util.List;
 

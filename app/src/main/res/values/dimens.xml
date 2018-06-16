@@ -2,4 +2,5 @@
 <resources>
     <dimen name="detail_text_size">16sp</dimen>
     <dimen name="reviews_text_size">16sp</dimen>
+    <dimen name="review_title_textSize">20sp</dimen>
 </resources>
