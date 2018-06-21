@@ -22,9 +22,9 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         //create favorites tables
+        // try using movie ID as primary key
         final String CREATE_TABLE = "CREATE TABLE " + FavoriteContract.FavoriteEntry.TABLE_NAME +
-                " (" + FavoriteContract.FavoriteEntry._ID + " INTEGER PRIMARY KEY, " +
-                FavoriteContract.FavoriteEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
+                " (" + FavoriteContract.FavoriteEntry.COLUMN_MOVIE_ID + " INTEGER PRIMARY KEY, " +
                 FavoriteContract.FavoriteEntry.COLUMN_RATING + " REAL NOT NULL, " +
                 FavoriteContract.FavoriteEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 FavoriteContract.FavoriteEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +

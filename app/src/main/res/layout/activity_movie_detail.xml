@@ -16,8 +16,13 @@
         android:padding="4dp"
         tools:context=".ui.MovieDetailActivity">
 
-        <!-- TODO, remove button, Only for testing. UI needs work if time -->
-
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:id="@+id/add_favorite_button"
+            android:onClick="addFavorite"
+            android:text="Add To Favorites"
+            />
 
         <ImageView
             android:id="@+id/iv_backdrop"

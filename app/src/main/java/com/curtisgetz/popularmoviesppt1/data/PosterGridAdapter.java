@@ -32,10 +32,10 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
     private int visibleThreshold = 5;
     private int lastVisibleItem, totalItemCount;
     private boolean loading;
-    private boolean mIsSW600;
+    private boolean mIsSW600, mIsFavorites;
 
 
-    protected List<Movie> mMovieList;
+    private List<Movie> mMovieList;
     final private PosterClickListener mOnClickListener;
     private OnLoadMoreListener mOnLoadMoreListener;
     private RecyclerView mRecyclerView;
@@ -43,24 +43,30 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
 
 
     public PosterGridAdapter(PosterClickListener clickListener, List<Movie> movieList,
-                             RecyclerView recyclerView, boolean isSW600) {
+                               RecyclerView recyclerView, boolean isSW600) {
         this.mOnClickListener = clickListener;
         this.mMovieList = movieList;
         this.mIsSW600 = isSW600;
         this.mRecyclerView = recyclerView;
+        mIsFavorites = false;
         setScrollListener();
 
     }
 
 
-    //constructor for Cursor Adapter subclass (MovieList passed in from subclass
-    public PosterGridAdapter(PosterClickListener clickListener,
-                             RecyclerView recyclerView, boolean isSW600){
+    public PosterGridAdapter(PosterClickListener clickListener, RecyclerView recyclerView, boolean isSW600) {
         this.mOnClickListener = clickListener;
+//        this.mMovieList = movieList;
         this.mIsSW600 = isSW600;
         this.mRecyclerView = recyclerView;
+        mIsFavorites = false;
         setScrollListener();
+
     }
+
+
+
+
 
     private void setScrollListener(){
 
@@ -78,7 +84,7 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
                     if(!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
                         // End has been reached
                         // Do something
-                        if(mOnLoadMoreListener != null){
+                        if(mOnLoadMoreListener != null && !mIsFavorites){
                             mOnLoadMoreListener.onLoadMore();
                         }
                         loading = true;
@@ -196,26 +202,32 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
     }
 
 
+    public void setIsFavorties(){
+        mIsFavorites = true;
+    }
 
-
-
-    // Cursor code
-
-
-
-
-
-
-
+    public void setIsNotFavorites(){
+        mIsFavorites = false;
+    }
 
 
 
 
+    public void setData(List<Movie> movieList){
+        this.mMovieList = movieList;
+    }
 
+    public void addData(List<Movie> movieList){
+        mMovieList.addAll(movieList);
+    }
 
+    public List<Movie> getmMovieList() {
+        return mMovieList;
+    }
 
-
-
+    public void clearData(){
+        mMovieList.clear();
+    }
 
 
 

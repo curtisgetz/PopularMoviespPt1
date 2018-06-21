@@ -1,5 +1,6 @@
 package com.curtisgetz.popularmoviesppt1.ui;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -23,6 +24,8 @@ import android.widget.Toast;
 
 import com.curtisgetz.popularmoviesppt1.data.Movie;
 import com.curtisgetz.popularmoviesppt1.R;
+import com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteContract;
+import com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteDbHelper;
 import com.curtisgetz.popularmoviesppt1.data.movie_review.MovieReview;
 import com.curtisgetz.popularmoviesppt1.data.movie_video.MovieVideo;
 import com.curtisgetz.popularmoviesppt1.data.movie_video.MovieVideoListAdapter;
@@ -232,6 +235,33 @@ public class MovieDetailActivity extends AppCompatActivity
     }
 
 
+
+    public void addFavorite(View view){
+        Log.v(TAG, "ADD TO FAVOrITE");
+
+        //insert new favorite with ContentResolver
+        //create empty ContentValues object
+        ContentValues contentValues = new ContentValues();
+        //put movie into ContentValues
+        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_TITLE, mMovie.getmTitle());
+        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_SYNOPSIS, mMovie.getmSynopsis());
+        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_RELEASE_DATE, mMovie.getmReleaseDate());
+        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_RATING, mMovie.getmVoteAverage());
+        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER_URL, mMovie.getmPosterUrl());
+        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_BG_URL, mMovie.getmBGImage());
+        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_MOVIE_ID, mMovie.getmId());
+
+        //insert the content values via a ContentResolver
+        Uri uri = getContentResolver().insert(FavoriteContract.FavoriteEntry.CONTENT_URI, contentValues);
+
+        //TODO Toast, for testing, remove later
+        if(uri != null){
+            Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), mMovie.getmTitle(), Toast.LENGTH_LONG).show();
+        }
+
+
+    }
 
     //TODO  remove, only for testing
     public void testButton(View view){
