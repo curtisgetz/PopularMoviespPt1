@@ -3,6 +3,8 @@ package com.curtisgetz.popularmoviesppt1.ui;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -16,6 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,15 +34,19 @@ import com.curtisgetz.popularmoviesppt1.data.movie_review.MovieReview;
 import com.curtisgetz.popularmoviesppt1.data.movie_video.MovieVideo;
 import com.curtisgetz.popularmoviesppt1.data.movie_video.MovieVideoListAdapter;
 import com.curtisgetz.popularmoviesppt1.utils.CheckForFavoriteLoader;
+import com.curtisgetz.popularmoviesppt1.utils.DbBitmapUtil;
 import com.curtisgetz.popularmoviesppt1.utils.FetchReviewsLoader;
 import com.curtisgetz.popularmoviesppt1.utils.FetchVideoListLoader;
 import com.curtisgetz.popularmoviesppt1.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.curtisgetz.popularmoviesppt1.utils.DbBitmapUtil.getBytes;
 
 
 public class MovieDetailActivity extends AppCompatActivity
@@ -60,6 +67,7 @@ public class MovieDetailActivity extends AppCompatActivity
     private int mMovieId;
     private List<MovieReview> mReviewList;
     private Context mContext;
+    private byte[] mImageBytes;
 
 
     @BindView(R.id.video_recyclerview) RecyclerView mVideoRecyclerView;
@@ -96,6 +104,9 @@ public class MovieDetailActivity extends AppCompatActivity
             if(intent != null) {
                 mMovie = intent.getParcelableExtra(getString(R.string.movie_to_pass));
                 updateUI();
+            }else{
+                Toast.makeText(this, R.string.detail_intent_error, Toast.LENGTH_SHORT).show();
+                finish();
             }
 
         }else{
@@ -136,16 +147,42 @@ public class MovieDetailActivity extends AppCompatActivity
     }
 
     private void updateUI(){
+
         mMovieId = mMovie.getmId();
         setTitle(mMovie.getmTitle());
         mReleaseDateTV.setText(mMovie.getLocalizedDateString());
         mSynopsis.setText(mMovie.getmSynopsis());
         mRating.setText(mMovie.getVoteAverageString());
 
+        //get bitmap from Picassso. Convert to byte array to save in DB if user saves.
+        Target target = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                mImageBytes =  DbBitmapUtil.getBytes(bitmap);
+                mMovie.setmImageBytes(DbBitmapUtil.getBytes(bitmap));
+                mPosterImageView.setImageBitmap(bitmap);
+                Log.v(TAG, "Bitmap Loaded");
+            }
+
+            @Override
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
         Picasso.get().load(mMovie.getFullPosterUrl(mIsSW600))
                 .placeholder(R.drawable.posterloadingplaceholder185)
                 .error(R.drawable.posterplaceholder185)
-                .into(mPosterImageView);
+                .into(target);
+/*
+        Picasso.get().load(mMovie.getFullPosterUrl(mIsSW600))
+                .placeholder(R.drawable.posterloadingplaceholder185)
+                .error(R.drawable.posterplaceholder185)
+                .into(mPosterImageView);*/
 
         Picasso.get().load(mMovie.getFullBGImageUrl())
                 .placeholder(R.drawable.backdropplaceholder)
@@ -158,9 +195,6 @@ public class MovieDetailActivity extends AppCompatActivity
     // Get user click on trailers/videos
     @Override
     public void onMovieItemClick(int clickedMovieIndex) {
-        //TODO testing remove Toast when finished
-        //Toast.makeText(this,  mVideoList.get(clickedMovieIndex).getmName(), Toast.LENGTH_SHORT).show();
-
         String trailerKey = mVideoList.get(clickedMovieIndex).getmVideoKey();
         //pass trailerKey of selected video to buildVideoIntentUri method
         Uri videoUri = NetworkUtils.buildVideoIntentUri(trailerKey);
@@ -186,14 +220,13 @@ public class MovieDetailActivity extends AppCompatActivity
         return new FetchVideoListLoader(this, mMovie);
     }
 
-    //TODO add TV for no videos
+
     @Override
     public void onLoadFinished(@NonNull Loader<List<MovieVideo>> loader, List<MovieVideo> data) {
 
            if(data == null || data.size() == 0) {
-
+                //for future use
            }else {
-
                mVideoList = data;
                mMovie.setmMovieVideoList(data);
                MovieVideoListAdapter adapter = new MovieVideoListAdapter(this, data);
@@ -254,6 +287,8 @@ public class MovieDetailActivity extends AppCompatActivity
         contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER_URL, mMovie.getmPosterUrl());
         contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_BG_URL, mMovie.getmBGImage());
         contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_MOVIE_ID, mMovie.getmId());
+        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_IMAGE_DATA, mMovie.getmImageBytes());
+
 
         //insert the content values via a ContentResolver
         Uri uri = getContentResolver().insert(FavoriteContract.FavoriteEntry.CONTENT_URI, contentValues);
@@ -262,6 +297,8 @@ public class MovieDetailActivity extends AppCompatActivity
 
         }
     }
+
+
 
 
     public void removeFromFavorites(){
@@ -279,29 +316,6 @@ public class MovieDetailActivity extends AppCompatActivity
     }
 
 
-    public void addFavorite(View view){
-        //set mIsFavorite bool on Movie object to true
-        mMovie.setIsFavorite(true);
-        //insert new favorite with ContentResolver
-        //create empty ContentValues object
-        ContentValues contentValues = new ContentValues();
-        //put movie into ContentValues
-        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_TITLE, mMovie.getmTitle());
-        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_SYNOPSIS, mMovie.getmSynopsis());
-        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_RELEASE_DATE, mMovie.getmReleaseDate());
-        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_RATING, mMovie.getmVoteAverage());
-        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER_URL, mMovie.getmPosterUrl());
-        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_BG_URL, mMovie.getmBGImage());
-        contentValues.put(FavoriteContract.FavoriteEntry.COLUMN_MOVIE_ID, mMovie.getmId());
-        //insert the content values via a ContentResolver
-        Uri uri = getContentResolver().insert(FavoriteContract.FavoriteEntry.CONTENT_URI, contentValues);
-
-        if (uri != null) {
-            Toast.makeText(MovieDetailActivity.this, getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
-
-        }
-    }
-
 
     public void getReviews(View view){
         //start reviews Loader
@@ -316,10 +330,10 @@ public class MovieDetailActivity extends AppCompatActivity
 
 
     public void showReviews(){
-        // Show reviews in fragment
-        MovieReviewFragment movieReviewFragment = new MovieReviewFragment();
-        movieReviewFragment.setmReviewList(mReviewList);
-        movieReviewFragment.show(getSupportFragmentManager(), "MovieReviewFragment");
+            // Show reviews in fragment
+            MovieReviewFragment movieReviewFragment = new MovieReviewFragment();
+            movieReviewFragment.setmReviewList(mReviewList);
+            movieReviewFragment.show(getSupportFragmentManager(), "MovieReviewFragment");
     }
 
 
@@ -395,13 +409,11 @@ public class MovieDetailActivity extends AppCompatActivity
         @Override
         public void onLoadFinished(@NonNull Loader<List<MovieReview>> loader, List<MovieReview> data) {
             if(data.size() > 0) {
-                //show review button if there are reviews
-                mReviewButton.setVisibility(View.VISIBLE);
                 mReviewList = data;
                 showReviews();
-            }else {
-                //otherwise hide review button
-                mReviewButton.setVisibility(View.VISIBLE);
+            }else{
+                Toast.makeText(MovieDetailActivity.this, getString(R.string.no_reviews), Toast.LENGTH_SHORT).show();
+
             }
         }
 

@@ -9,16 +9,12 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.CancellationSignal;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import java.net.UnknownServiceException;
 
 import static com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteContract.FavoriteEntry.COLUMN_MOVIE_ID;
-import static com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteContract.FavoriteEntry.COLUMN_TITLE;
 import static com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteContract.FavoriteEntry.TABLE_NAME;
 
 public class FavoriteContentProvider extends ContentProvider {
@@ -32,7 +28,7 @@ public class FavoriteContentProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     public static UriMatcher buildUriMatcher(){
-        // initialize with no matches by poassing NO_MATCH
+        // initialize with no matches by passing NO_MATCH
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
         uriMatcher.addURI(FavoriteContract.CONTENT_AUTHORITY, FavoriteContract.PATH_FAVORITES, FAVORITES);

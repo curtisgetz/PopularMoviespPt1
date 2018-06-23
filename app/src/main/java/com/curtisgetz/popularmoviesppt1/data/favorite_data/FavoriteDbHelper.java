@@ -30,7 +30,8 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
                 FavoriteContract.FavoriteEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
                 FavoriteContract.FavoriteEntry.COLUMN_POSTER_URL + " TEXT NOT NULL, " +
                 FavoriteContract.FavoriteEntry.COLUMN_SYNOPSIS + " TEXT NOT NULL, " +
-                FavoriteContract.FavoriteEntry.COLUMN_BG_URL + " TEXT NOT NULL);";
+                FavoriteContract.FavoriteEntry.COLUMN_BG_URL + " TEXT NOT NULL, " +
+                FavoriteContract.FavoriteEntry.COLUMN_IMAGE_DATA + " BLOB);";
 
         db.execSQL(CREATE_TABLE);
     }

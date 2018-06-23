@@ -1,8 +1,12 @@
 package com.curtisgetz.popularmoviesppt1.data;
 
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.curtisgetz.popularmoviesppt1.R;
+import com.curtisgetz.popularmoviesppt1.utils.DbBitmapUtil;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -119,15 +124,31 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
+        //Context context = holder.itemView.getContext();
         if(holder instanceof MovieViewHolder){
             String posterUrl = mMovieList.get(position).getFullPosterUrl(mIsSW600);
+          //implement offline loading later...
+           // byte[] imageBytes = mMovieList.get(position).getmImageBytes();
+           /* if(imageBytes != null && imageBytes.length > 0){
+                Bitmap posterBitmap = DbBitmapUtil.getImage(imageBytes);
 
-            Picasso.get().load(posterUrl)
+            String path = MediaStore.Images.Media
+                    .insertImage(context.getContentResolver(), posterBitmap,"Title", null );
+            /// /((MovieViewHolder) holder).posterIv.setImageBitmap(posterBitmap);
+                Uri uri = Uri.parse(path);
+            Log.v(TAG, "Loading image from DB");
+
+            Picasso.get().load(uri)
                     .placeholder(R.drawable.posterloadingplaceholder185)
                     .error(R.drawable.posterplaceholder185)
                     .into(((MovieViewHolder) holder).posterIv);
+            }else {*/
 
+                Picasso.get().load(posterUrl)
+                        .placeholder(R.drawable.posterloadingplaceholder185)
+                        .error(R.drawable.posterplaceholder185)
+                        .into(((MovieViewHolder) holder).posterIv);
+            //}
         }
         //else {
            // ((ProgressViewHolder) holder).mProgressBar.setIndeterminate(true);

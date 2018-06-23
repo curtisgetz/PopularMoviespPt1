@@ -2,15 +2,21 @@ package com.curtisgetz.popularmoviesppt1.ui;
 
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -69,8 +75,6 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.loading_progress) ProgressBar mLoadingProgress;
 
 
-    //TODO   restore when coming back from DetailActivity.  Currently duplicating movies
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +105,8 @@ public class MainActivity extends AppCompatActivity implements
     // and concentrate on the course material
        //setScrollListener();
 
-    }
 
+    }
 
 
 
@@ -172,7 +176,6 @@ public class MainActivity extends AppCompatActivity implements
             mSortBy = savedInstanceState.getInt(getString(R.string.sort_by_key));
         }
     }
-
 
 
 
@@ -437,6 +440,7 @@ public class MainActivity extends AppCompatActivity implements
                 List<Movie> movies = getMoviesFromCursor(data);
                 updateUI(movies);
                 getSupportLoaderManager().destroyLoader(FAVORITES_LOADER_ID);
+
             }
         }
 
@@ -462,6 +466,7 @@ public class MainActivity extends AppCompatActivity implements
                 int synopsisIndex = cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_SYNOPSIS);
                 int bgImageIndex = cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_BG_URL);
                 int posterUrlIndex = cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_POSTER_URL);
+              // int posterImageBytes = cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_RELEASE_DATE);
 
                 //get values
                 int movieId = cursor.getInt(movieIdIndex);
@@ -471,6 +476,11 @@ public class MainActivity extends AppCompatActivity implements
                 String movieSynopsis = cursor.getString(synopsisIndex);
                 String bgImageUrl = cursor.getString(bgImageIndex);
                 String posterUrl = cursor.getString(posterUrlIndex);
+               // byte[] imageBytes = cursor.getBlob(posterImageBytes);
+
+                //Movie movie = new Movie(movieId, movieRating, movieTitle, movieReleaseDate,
+                 //       posterUrl, movieSynopsis, bgImageUrl);
+                //movie.setmImageBytes(imageBytes);
 
                 moviesList.add(new Movie(movieId, movieRating, movieTitle, movieReleaseDate,
                         posterUrl, movieSynopsis, bgImageUrl));

@@ -27,6 +27,7 @@ public class Movie implements Parcelable{
     private String mBGImage;
     private List<MovieVideo> mMovieVideoList;
     private boolean mIsFavortie;
+    private byte[] mImageBytes;
 
 
     public Movie(int id, String posterUrl){
@@ -203,7 +204,12 @@ public class Movie implements Parcelable{
         return mIsFavortie;
     }
 
+    public byte[] getmImageBytes() {
+        return mImageBytes;
+    }
 
-
+    public void setmImageBytes(byte[] mImageBytes) {
+        this.mImageBytes = mImageBytes;
+    }
 }
 

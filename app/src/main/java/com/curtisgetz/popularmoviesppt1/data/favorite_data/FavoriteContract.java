@@ -34,6 +34,7 @@ public class FavoriteContract {
         public static final String COLUMN_POSTER_URL = "poster_url";
         public static final String COLUMN_SYNOPSIS = "synopsis";
         public static final String COLUMN_BG_URL = "background_url";
+        public static final String COLUMN_IMAGE_DATA = "image_data";
 
 
         public static Uri buildFavUriWithID(int id) {

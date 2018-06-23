@@ -33,6 +33,7 @@
     <string name="network_error">No Network Connection</string>
     <string name="video_error">Error Loading Video</string>
     <string name="already_favorite">This move is already saved to your favorites</string>
+    <string name="no_reviews">No Reviews For This Movie</string>
 
 
     <!-- saveInstanceState keys -->
@@ -71,6 +72,7 @@
     <string name="sort_by_menu_title">Sort By</string>
     <string name="selected_sort_option_cd">Selected Sort Option</string>
     <string name="reviews_text">Reviews</string>
+    <string name="detail_intent_error">Error Loading Movie Details</string>
 
 
 </resources>
