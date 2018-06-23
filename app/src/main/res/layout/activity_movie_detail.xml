@@ -6,6 +6,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/black">
 
+    <!-- multiple layouts could be set up better to reuse the
+    same layout instead of repeating a lot of code   -->
+
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -16,13 +19,6 @@
         android:padding="4dp"
         tools:context=".ui.MovieDetailActivity">
 
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:id="@+id/add_favorite_button"
-            android:onClick="addFavorite"
-            android:text="Add To Favorites"
-            />
 
         <ImageView
             android:id="@+id/iv_backdrop"
@@ -38,6 +34,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/backdropplaceholder" />
+
+
+
+
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -96,8 +96,8 @@
             android:layout_height="18dp"
             android:textSize="12sp"
             android:background="@android:color/holo_blue_light"
-            android:text="Reviews"
-            android:onClick="testButton"
+            android:text="@string/reviews_text"
+            android:onClick="getReviews"
             app:layout_constraintTop_toBottomOf="@id/tv_rating_label"
             app:layout_constraintLeft_toLeftOf="@id/tv_rating_label"
             app:layout_constraintRight_toRightOf="@id/tv_user_rating"

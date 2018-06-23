@@ -63,9 +63,4 @@ public class MovieVideo {
     public void setmType(String mType) {
         this.mType = mType;
     }
-
-
-
-
-
 }

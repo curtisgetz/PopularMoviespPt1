@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,19 +21,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.curtisgetz.popularmoviesppt1.data.CustomSpinnerAdapter;
+
 import com.curtisgetz.popularmoviesppt1.data.Movie;
 import com.curtisgetz.popularmoviesppt1.data.PosterGridAdapter;
 import com.curtisgetz.popularmoviesppt1.R;
 import com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteContract;
-import com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteCursorAdapter;
 import com.curtisgetz.popularmoviesppt1.utils.FetchMoviesTaskLoader;
 import com.curtisgetz.popularmoviesppt1.utils.PullFavoritesLoader;
 
@@ -61,14 +56,13 @@ public class MainActivity extends AppCompatActivity implements
     private static final int DEFAULT_COLUMN_COUNT = 3;
 
     private PosterGridAdapter mAdapter;
-    private FavoriteCursorAdapter mCursorAdapter;
-   // private ArrayList<Movie> mMainMovieList = new ArrayList<>();
     private int mSortBy;
     private int mPageNumber = 1;
     private Handler mHandler;
     private boolean mIsSW600;
     private LoaderManager.LoaderCallbacks<Cursor> mFavoriteCallback;
-    private FavoriteCursorAdapter test;
+    private ArrayList<Movie> mMainMovieList = new ArrayList<>();
+
 
     @BindView(R.id.main_gridview) RecyclerView mPosterRecyclerView;
     @BindView(R.id.tv_error_loading) TextView mErrorTextView;
@@ -80,12 +74,11 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v(TAG, "MAIN On Create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        mHandler = new Handler();
-        //callback for Favortites Loader
+       // mHandler = new Handler();
+        //callback for Favorites Loader
         mFavoriteCallback = new FavoriteCallback();
         //get number of columns based on SW600
         int columnCount = calculateColumnCount();
@@ -95,97 +88,66 @@ public class MainActivity extends AppCompatActivity implements
         //add divider to RV
         mPosterRecyclerView.addItemDecoration(new RecyclerViewDivider(RECYCLERVIEW_GRID_SPACING));
 
+        //create new PosterGridAdapter
+        mAdapter = new PosterGridAdapter(
+                this, mPosterRecyclerView, mIsSW600, mMainMovieList);
         //check for savedInstanceState
         checkForSavedInstanceState(savedInstanceState);
 
 
-        //create new PosterGridAdapter
-        mAdapter = new PosterGridAdapter(
-                this, mPosterRecyclerView, mIsSW600);
+        mLoadingProgress.setVisibility(View.INVISIBLE);
         //Scroll loading listener
     //Temp disabled scroll listener.  Was having problems and wanted to complete the project
     // and concentrate on the course material
-        mAdapter.setOnLoadMoreListener(new PosterGridAdapter.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
+       //setScrollListener();
+
+    }
+
+
+
+
+  /*  public void setScrollListener(){
+
+        if(mAdapter != null && mSortBy != SORT_BY_FAVORITES){
+            mAdapter.setOnLoadMoreListener(new PosterGridAdapter.OnLoadMoreListener() {
+                @Override
+                public void onLoadMore() {
 
                     showLoadingProgress();
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                                loadMovies();
-                                mAdapter.setLoaded();
+
+                            loadMovies();
+                            mAdapter.setLoaded();
                         }
 
                     }, 2000);
 
 
-            }
-        });
+                }
+            });
 
-    }
-
-
-
+        }
+    }*/
 
 
 
-    @Override
-    protected void onStart() {
-        Log.v(TAG, "On Start : " + String.valueOf(mPageNumber));
-       // Log.v(TAG, "On Start : " + String.valueOf(mMainMovieList.size()));
-        Log.v(TAG, "mSortBy = " + String.valueOf(mSortBy));
-
-        super.onStart();
-
-    }
 
 
-    @Override
-    protected void onStop() {
-      //  mMainMovieList.clear();
-        Log.v(TAG, "On Stop : " + String.valueOf(mPageNumber));
-        //Log.v(TAG, "On Stop : " + String.valueOf(mMainMovieList.size()));
-        Log.v(TAG, "mSortBy = " + String.valueOf(mSortBy));
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        Log.v(TAG, "On Destroy : " + String.valueOf(mPageNumber));
-       // Log.v(TAG, "On Destroy : " + String.valueOf(mMainMovieList.size()));
-        Log.v(TAG, "mSortBy = " + String.valueOf(mSortBy));
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onResume() {
-        Log.v(TAG, "On Resume : " + String.valueOf(mPageNumber));
-       // Log.v(TAG, "On Resume : " + String.valueOf(mMainMovieList.size()));
-        Log.v(TAG, "mSortBy = " + String.valueOf(mSortBy));
-        super.onResume();
-    }
-
-
-    @Override
-    protected void onPause() {
-        Log.v(TAG, "On Pause : " + String.valueOf(mPageNumber));
-       // Log.v(TAG, "On Pause : " + String.valueOf(mMainMovieList.size()));
-        Log.v(TAG, "mSortBy = " + String.valueOf(mSortBy));
-        super.onPause();
-    }
 
     @Override
     protected void onRestart() {
-        Log.v(TAG, "On Restart : " + String.valueOf(mPageNumber));
-        //Log.v(TAG, "On ReStart : " + String.valueOf(mMainMovieList.size()));
-        Log.v(TAG, "mSortBy = " + String.valueOf(mSortBy));
+        if(mSortBy == SORT_BY_FAVORITES){
+            //update favorites when restarting
+            clearUI();
+            loadMovies();
+        }
         super.onRestart();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.v(TAG, "onSaveInstanceState");
         ArrayList<Movie> movies = new ArrayList<>(mAdapter.getmMovieList());
         outState.putParcelableArrayList(getString(R.string.save_key), movies);
         outState.putInt(getString(R.string.page_number_key), mPageNumber);
@@ -195,25 +157,19 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.v(TAG, "onRestoreInstanceState");
-        //checkForSavedInstanceState(savedInstanceState);
+        checkForSavedInstanceState(savedInstanceState);
         super.onRestoreInstanceState(savedInstanceState);
-        //updateUI();
     }
 
     public void checkForSavedInstanceState(Bundle savedInstanceState){
-        Log.v(TAG, "checkForSaveInstanceState");
         if(savedInstanceState == null || !savedInstanceState.containsKey(getString(R.string.save_key))){
-            Log.v(TAG, "Check For Save Instance State = IF");
             loadMovies();
         }else{
-            Log.v(TAG, "Check For Save Instance State = ELSE");
-            //mMainMovieList = savedInstanceState.getParcelableArrayList(getString(R.string.save_key));
-            ArrayList<Movie> movies = savedInstanceState.getParcelableArrayList(getString(R.string.save_key));
-            mAdapter.setData(movies);
+            mMainMovieList = savedInstanceState.getParcelableArrayList(getString(R.string.save_key));
+            mAdapter = new PosterGridAdapter(this, mPosterRecyclerView, isOnline(), mMainMovieList);
+            mPosterRecyclerView.setAdapter(mAdapter);
             mPageNumber = savedInstanceState.getInt(getString(R.string.page_number_key));
             mSortBy = savedInstanceState.getInt(getString(R.string.sort_by_key));
-
         }
     }
 
@@ -221,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     private int calculateColumnCount(){
+        // use more columns on larger screens
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int widthInDIP = Math.round(dm.widthPixels / dm.density);
@@ -237,7 +194,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onPosterClick(int clickedPosterIndex) {
-        Log.v(TAG, "onPosterClick");
         List<Movie> movies = mAdapter.getmMovieList();
        if(movies.get(clickedPosterIndex) == null){
            Toast.makeText(MainActivity.this, getString(R.string.loading_error), Toast.LENGTH_SHORT)
@@ -257,43 +213,40 @@ public class MainActivity extends AppCompatActivity implements
 
 
 
-
-
     public void hideProgressBar(){
         Log.v(TAG, "hideProgressBar");
       // mProgressBar.setVisibility(View.INVISIBLE);
        mPosterRecyclerView.setVisibility(View.VISIBLE);
     }
     public void showLoadingProgress(){
-        mLoadingProgress.setVisibility(View.VISIBLE);
+        //mLoadingProgress.setVisibility(View.VISIBLE);
     }
     public void hideLoadingProgress(){
-        mLoadingProgress.setVisibility(View.INVISIBLE);
+        //mLoadingProgress.setVisibility(View.INVISIBLE);
     }
-
 
 
     @NonNull
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, @Nullable final Bundle args) {
-        Log.v(TAG, "onCreateLoader - List<Movie>");
         return new FetchMoviesTaskLoader(this, mSortBy, mPageNumber);
     }
 
 
     @Override
     public void onLoadFinished(@NonNull Loader<List<Movie>> loader, List<Movie> data) {
-        //mAdapter.setData(data);
-        Log.v(TAG, "onLoadFinished - List<Movie>");
+
+        //having problems with loader adding movies when I don't want them.  Using this as a workaround for now.
+        //need to figure out what I'm doing wrong
+        if(mSortBy == SORT_BY_FAVORITES){
+            return;
+        }
         hideLoadingProgress();
         hideProgressBar();
         //if null is returned then display toast
         if(data == null) {
             unableToLoadMoreToast();
         } else {
-            //add loaded movies to current list
-          //  mMainMovieList.addAll(data);
-            //mAdapter.addData(data);
             updateUI(data);
             mPageNumber++;
         }
@@ -302,16 +255,14 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLoaderReset(@NonNull Loader<List<Movie>> loader) {
-       // mAdapter.setData(null);
+
 
     }
     private void clearUI(){
         showLoadingProgress();
-
-       // mMainMovieList.clear();
         mAdapter.clearData();
         mAdapter.notifyDataSetChanged();
-        //reset page number for network calls
+        //reset page number for network calls (for scroll listener)
         mPageNumber = 1;
     }
 
@@ -330,25 +281,22 @@ public class MainActivity extends AppCompatActivity implements
         hideProgressBar();
         hideLoadingProgress();
         if(mPosterRecyclerView.getAdapter() != null){
-            mAdapter.addData(movieList);
-            mAdapter.notifyDataSetChanged();
+            //change back to AddData if I reenable the scroll listener
+            mAdapter.setData(new ArrayList<>(movieList));
+            //mAdapter.notifyDataSetChanged();
         }else {
             mPosterRecyclerView.setAdapter(mAdapter);
-            mAdapter.setData(movieList);
+            mAdapter.setData(new ArrayList<>(movieList));
         }
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //inflatemenu for sort options
-
+        //inflat emenu for sort options
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
-
-    //TODO update menu for sorting
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -358,10 +306,9 @@ public class MainActivity extends AppCompatActivity implements
         MenuItem topRatedItem = menu.findItem(R.id.action_sort_top_rated);
         MenuItem favoriteItem = menu.findItem(R.id.action_sort_favorites);
         MenuItem titleItem = menu.findItem(R.id.action_current_title);
-
+        titleItem.setEnabled(false);
         switch (mSortBy){
             case SORT_BY_POPULAR:
-                favoriteItem.setIcon(R.drawable.ic_film_roll);
                 popularItem.setVisible(false);
                 topRatedItem.setVisible(true);
                 favoriteItem.setVisible(true);
@@ -378,7 +325,6 @@ public class MainActivity extends AppCompatActivity implements
                 topRatedItem.setVisible(true);
                 favoriteItem.setVisible(false);
                 titleItem.setTitle(getString(R.string.favorites_title));
-
                 return true;
         }
         return super.onPrepareOptionsMenu(menu);
@@ -387,8 +333,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //handle sort option selections
-        //old menu code
-
         clearUI();
         int clickedItem = item.getItemId();
 
@@ -428,7 +372,6 @@ public class MainActivity extends AppCompatActivity implements
 
 
     public void loadMovies(){
-        Log.v(TAG, "loadMovies() - " + String.valueOf(mPageNumber));
         if(!isOnline()){
             noNetworkToast();
         }else {
@@ -437,13 +380,10 @@ public class MainActivity extends AppCompatActivity implements
                 case SORT_BY_POPULAR:
                 case SORT_BY_TOP_RATED:
 
-
                     Loader<List<Movie>> movieLoader = loaderManager.getLoader(MOVIE_LIST_LOADER_ID);
                     if (movieLoader == null) {
-                        Log.v(TAG, "movieLoader is NULL");
                         loaderManager.initLoader(MOVIE_LIST_LOADER_ID, null, this);
                     } else {
-                        Log.v(TAG, "movieLoader in NOT NULL");
                         loaderManager.restartLoader(MOVIE_LIST_LOADER_ID, null, this);
                     }
                     break;
@@ -479,12 +419,12 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    //callback class for favorites Loader
     private class FavoriteCallback implements LoaderManager.LoaderCallbacks<Cursor>{
 
         @NonNull
         @Override
         public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-            Log.v(TAG, "Favorites, onCreateLoader");
             return new PullFavoritesLoader(MainActivity.this);
         }
 
@@ -494,13 +434,9 @@ public class MainActivity extends AppCompatActivity implements
             if(data == null) {
                 unableToLoadMoreToast();
             } else {
-                //get movies from Cursor and assign to mMainMovieList
-                // mMainMovieList.clear();
-              // mMainMovieList.addAll(getMoviesFromCursor(data));
                 List<Movie> movies = getMoviesFromCursor(data);
                 updateUI(movies);
-               // adapter.notifyDataSetChanged();
-
+                getSupportLoaderManager().destroyLoader(FAVORITES_LOADER_ID);
             }
         }
 
@@ -518,8 +454,7 @@ public class MainActivity extends AppCompatActivity implements
             for(int i = 0; i < rows; i++) {
 
                 cursor.moveToPosition(i);
-                //indixes for columns
-//        int idIndex = cursor.getColumnIndex(FavoriteContract.FavoriteEntry._ID);
+                //indices for columns
                 int movieIdIndex = cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_MOVIE_ID);
                 int ratingIndex = cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_RATING);
                 int titleIndex = cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_TITLE);
@@ -529,7 +464,6 @@ public class MainActivity extends AppCompatActivity implements
                 int posterUrlIndex = cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_POSTER_URL);
 
                 //get values
-//        final int id = cursor.getInt(idIndex);
                 int movieId = cursor.getInt(movieIdIndex);
                 double movieRating = cursor.getDouble(ratingIndex);
                 String movieTitle = cursor.getString(titleIndex);
@@ -542,13 +476,8 @@ public class MainActivity extends AppCompatActivity implements
                         posterUrl, movieSynopsis, bgImageUrl));
 
             }
-
             return moviesList;
-
         }
-
     }
-
-
 
 }

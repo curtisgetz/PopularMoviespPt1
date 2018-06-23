@@ -26,6 +26,7 @@ public class Movie implements Parcelable{
     private String mSynopsis;
     private String mBGImage;
     private List<MovieVideo> mMovieVideoList;
+    private boolean mIsFavortie;
 
 
     public Movie(int id, String posterUrl){
@@ -43,6 +44,7 @@ public class Movie implements Parcelable{
         this.mPosterUrl = mPosterUrl;
         this.mSynopsis = mSynopsis;
         this.mBGImage = bgImage;
+        this.mIsFavortie = false;
 
     }
 
@@ -191,6 +193,16 @@ public class Movie implements Parcelable{
 
 
     }
+
+
+    public void setIsFavorite(boolean isFavorite){
+        this.mIsFavortie = isFavorite;
+    }
+
+    public boolean getIsFavorite(){
+        return mIsFavortie;
+    }
+
 
 
 }

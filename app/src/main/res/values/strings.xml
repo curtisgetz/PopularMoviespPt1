@@ -18,6 +18,13 @@
     <string name="showing_favorites">Showing Your Favorites</string>
     <string name="top_rated_sorted">Sorted By Top Rated</string>
     <string name="popular_sorted">Sorted By Popular</string>
+    <string name="add_to_favorites">Add To Favorites</string>
+    <string name="remove_from_favorites">Remove From Favorites</string>
+
+
+    <!-- Confirmation Toasts -->
+    <string name="added_to_favorites">Added To Favorites</string>
+    <string name="removed_from_favorites">Removed From Favorites</string>
 
     <!-- Errors-->
     <string name="loading_error">Error Loading Data</string>
@@ -25,6 +32,7 @@
     <string name="unable_to_load">Unable To Load More Movies</string>
     <string name="network_error">No Network Connection</string>
     <string name="video_error">Error Loading Video</string>
+    <string name="already_favorite">This move is already saved to your favorites</string>
 
 
     <!-- saveInstanceState keys -->
@@ -62,7 +70,7 @@
     <string name="youtube_name">Youtube</string>
     <string name="sort_by_menu_title">Sort By</string>
     <string name="selected_sort_option_cd">Selected Sort Option</string>
-
+    <string name="reviews_text">Reviews</string>
 
 
 </resources>

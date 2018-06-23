@@ -26,12 +26,9 @@ public class MovieReviewFragment extends DialogFragment implements LoaderManager
 
     private List<MovieReview> mReviewList;
     private int mMovieId;
-    private RecyclerView mReviewRecyclerView;
-    //@BindView(R.id.review_recyclerview) RecyclerView mReviewRecyclerView;
 
 
     public MovieReviewFragment() {
-        Log.v(TAG, "FRAGMENT CREATED");
 
     }
 
@@ -45,8 +42,8 @@ public class MovieReviewFragment extends DialogFragment implements LoaderManager
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie_reviews, container, false);
-        mReviewRecyclerView = (RecyclerView) view.findViewById(R.id.review_recyclerview);
-//        Log.v(TAG, mReviewList.get(0).getmReviewAuthor());
+        RecyclerView mReviewRecyclerView =  view.findViewById(R.id.review_recyclerview);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         mReviewRecyclerView.setLayoutManager(layoutManager);
 

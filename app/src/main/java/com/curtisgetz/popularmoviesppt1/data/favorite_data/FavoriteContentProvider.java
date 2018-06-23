@@ -13,15 +13,18 @@ import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.net.UnknownServiceException;
 
+import static com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteContract.FavoriteEntry.COLUMN_MOVIE_ID;
+import static com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteContract.FavoriteEntry.COLUMN_TITLE;
 import static com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteContract.FavoriteEntry.TABLE_NAME;
 
 public class FavoriteContentProvider extends ContentProvider {
 
 
-
+    private final static String TAG = FavoriteContentProvider.class.getSimpleName();
     public static final int FAVORITES = 100;
     public static final int FAVORITE_WITH_ID = 101;
 
@@ -32,7 +35,6 @@ public class FavoriteContentProvider extends ContentProvider {
         // initialize with no matches by poassing NO_MATCH
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-
         uriMatcher.addURI(FavoriteContract.CONTENT_AUTHORITY, FavoriteContract.PATH_FAVORITES, FAVORITES);
         uriMatcher.addURI(FavoriteContract.CONTENT_AUTHORITY,
                 FavoriteContract.PATH_FAVORITES + "/#", FAVORITE_WITH_ID);
@@ -41,7 +43,6 @@ public class FavoriteContentProvider extends ContentProvider {
     }
 
     //member variable for a FavoriteDBHelper.  Initialized in onCreate()
-
     private FavoriteDbHelper mFavoriteDbHelper;
 
 
@@ -105,6 +106,22 @@ public class FavoriteContentProvider extends ContentProvider {
                 returnCursor = db.query(TABLE_NAME, projection, selection,
                         selectionArgs, null, null, sortOrder);
                 break;
+
+            case FAVORITE_WITH_ID:
+                String id = uri.getPathSegments().get(1);
+                //Selection is the movie ID col.
+                String [] mSelectionArgs = new String[] {id};
+
+                Log.v(TAG, "FAVORITES WITH ID - "   + mSelectionArgs[0]);
+
+                returnCursor = db.query(TABLE_NAME,
+                        projection,
+                        COLUMN_MOVIE_ID + "=?",
+                        mSelectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
             //default exception
             default:
                 throw new UnsupportedOperationException("Unknown URI - " + uri);
@@ -112,14 +129,10 @@ public class FavoriteContentProvider extends ContentProvider {
         }
         //set notification URL on the Cursor and return it
         returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
-
         return returnCursor;
     }
 
-
-
     //implement delete to delete a single row
-
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
@@ -132,6 +145,7 @@ public class FavoriteContentProvider extends ContentProvider {
         // keep track of number of deletes favorites
         int favoritesDeleted; //defaults to 0
 
+        String whereClause = COLUMN_MOVIE_ID + "=?";
         //code to delete single row
         switch (match) {
 
@@ -139,7 +153,7 @@ public class FavoriteContentProvider extends ContentProvider {
                 //get favorite ID from the URI path
                 String id = uri.getPathSegments().get(1);
                 //use selection and selectionArgs to filter for this ID
-                favoritesDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+                favoritesDeleted = db.delete(TABLE_NAME,whereClause, new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri - " + uri);

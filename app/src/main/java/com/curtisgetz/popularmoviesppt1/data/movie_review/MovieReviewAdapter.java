@@ -39,18 +39,13 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
 
         return new ReviewViewHolder(view);
 
-
-
-
     }
 
     @Override
     public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position) {
-
+        //set text for review author and content
         holder.mReviewAuthor.setText(mReviewList.get(position).getmReviewAuthor());
         holder.mReviewContent.setText(mReviewList.get(position).getmReviewContent());
-
-
     }
 
     class ReviewViewHolder extends RecyclerView.ViewHolder {
@@ -62,11 +57,5 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
             ButterKnife.bind(this, view);
 
         }
-
-
-
     }
-
-
-
 }

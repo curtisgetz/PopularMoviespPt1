@@ -8,23 +8,18 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteContract;
-import com.curtisgetz.popularmoviesppt1.data.favorite_data.FavoriteCursorAdapter;
 
 public class PullFavoritesLoader extends AsyncTaskLoader<Cursor> {
     private static final String TAG = PullFavoritesLoader.class.getSimpleName();
 
 
     private Cursor mFavoriteData;
-    private FavoriteCursorAdapter mAdapter;
     //unsure proper way to avoid this type of memory leak when using Loaders
-    //private Context mContext;
 
     public PullFavoritesLoader(@NonNull Context context) {
         super(context);
         mFavoriteData = null;
-
     }
-
 
 
     @Override
@@ -43,7 +38,6 @@ public class PullFavoritesLoader extends AsyncTaskLoader<Cursor> {
     public Cursor loadInBackground() {
 
         //load all favorite data from DB
-
         try {
             return getContext().getContentResolver().query(FavoriteContract.FavoriteEntry.CONTENT_URI,
                     null,
@@ -55,9 +49,6 @@ public class PullFavoritesLoader extends AsyncTaskLoader<Cursor> {
             e.printStackTrace();
             return null;
         }
-
-
-
     }
 
     @Override

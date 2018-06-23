@@ -4,7 +4,6 @@ public class MovieReview {
 
 
     private String mReviewId, mReviewAuthor, mReviewContent, mReviewUrl;
-    private int mMovieId;
 
 
     public MovieReview() {
@@ -15,9 +14,7 @@ public class MovieReview {
         this.mReviewAuthor = reviewAuthor;
         this.mReviewContent = reviewContent;
         this.mReviewUrl = reviewUrl;
-
     }
-
 
     public String getmReviewId() {
         return mReviewId;

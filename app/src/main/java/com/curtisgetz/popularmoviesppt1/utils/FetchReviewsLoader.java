@@ -22,7 +22,6 @@ public class FetchReviewsLoader extends AsyncTaskLoader<List<MovieReview>>{
 
     @Override
     protected void onStartLoading() {
-        Log.v(TAG, "ON START LOADING");
         super.onStartLoading();
         forceLoad();
     }
@@ -30,7 +29,6 @@ public class FetchReviewsLoader extends AsyncTaskLoader<List<MovieReview>>{
 
     @Override
     public List<MovieReview> loadInBackground() {
-        Log.v(TAG, "LOAD IN BACKGROUND");
         return NetworkUtils.getReviewList(mMovieID);
     }
 

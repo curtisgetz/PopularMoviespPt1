@@ -26,8 +26,7 @@ public class FavoriteContract {
         public static final String TABLE_NAME = "favorites";
 
         //columns
-        // Since TaskEntry implements the interface "BaseColumns", it has an automatically produced
-        // "_ID" column
+        //use movie_id as primary key
         public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_RATING = "rating";
@@ -36,7 +35,11 @@ public class FavoriteContract {
         public static final String COLUMN_SYNOPSIS = "synopsis";
         public static final String COLUMN_BG_URL = "background_url";
 
+
+        public static Uri buildFavUriWithID(int id) {
+            return CONTENT_URI.buildUpon()
+                    .appendPath(String.valueOf(id))
+                    .build();
+        }
     }
-
-
 }

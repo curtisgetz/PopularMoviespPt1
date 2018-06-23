@@ -36,9 +36,8 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
     }
 
 
-    //this method discars old table and calls onCreate to recreate a new one. Only occurs when version
+    //this method discards old table and calls onCreate to recreate a new one. Only occurs when version
     // is incremented.
-
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

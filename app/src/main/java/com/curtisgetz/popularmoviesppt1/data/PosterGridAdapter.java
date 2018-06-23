@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import com.curtisgetz.popularmoviesppt1.R;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -35,19 +37,19 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
     private boolean mIsSW600, mIsFavorites;
 
 
-    private List<Movie> mMovieList;
+    private ArrayList<Movie> mMovieList;
     final private PosterClickListener mOnClickListener;
     private OnLoadMoreListener mOnLoadMoreListener;
     private RecyclerView mRecyclerView;
 
 
 
-    public PosterGridAdapter(PosterClickListener clickListener, List<Movie> movieList,
-                               RecyclerView recyclerView, boolean isSW600) {
+    public PosterGridAdapter(PosterClickListener clickListener, RecyclerView recyclerView,
+                             boolean isSW600, ArrayList<Movie> movies) {
         this.mOnClickListener = clickListener;
-        this.mMovieList = movieList;
         this.mIsSW600 = isSW600;
         this.mRecyclerView = recyclerView;
+        this.mMovieList = movies;
         mIsFavorites = false;
         setScrollListener();
 
@@ -63,9 +65,6 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
         setScrollListener();
 
     }
-
-
-
 
 
     private void setScrollListener(){
@@ -89,22 +88,11 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
                         }
                         loading = true;
                     }
-
                 }
             });
 
-
-
         }
-
     }
-
-/*
-    public void setData(List<Movie> movieList){
-        mMovieList = movieList;
-        notifyDataSetChanged();
-    }
-*/
 
 
     public interface PosterClickListener {
@@ -166,8 +154,6 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
     }
 
 
-
-
     /* used
     *https://medium.com/@programmerasi/how-to-implement-load-more-in-recyclerview-3c6358297f4
     * for how to get 'endless' scrolling
@@ -188,12 +174,10 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
     }
 
     public static class ProgressViewHolder extends RecyclerView.ViewHolder{
-        // @BindView(R.id.scroll_progress_bar) ProgressBar mProgressBar;
 
          ProgressViewHolder(View view) {
             super(view);
-          //  ButterKnife.bind(this, view);
-            //mProgressBar = (ProgressBar) view.findViewById(R.id.scroll_progress_bar);
+
         }
     }
 
@@ -213,20 +197,25 @@ public class PosterGridAdapter extends RecyclerView.Adapter{
 
 
 
-    public void setData(List<Movie> movieList){
-        this.mMovieList = movieList;
+    public void setData(ArrayList<Movie> movieList){
+        this.mMovieList =new ArrayList<>(movieList);
+        notifyDataSetChanged();
     }
 
-    public void addData(List<Movie> movieList){
+    public void addData(ArrayList<Movie> movieList){
+        int currentSize = mMovieList.size();
+        int addSize = movieList.size();
         mMovieList.addAll(movieList);
+        notifyItemRangeInserted(currentSize, addSize);
     }
 
-    public List<Movie> getmMovieList() {
+    public ArrayList<Movie> getmMovieList() {
         return mMovieList;
     }
 
     public void clearData(){
         mMovieList.clear();
+        notifyItemRangeRemoved(mMovieList.size(), mMovieList.size());
     }
 
 
